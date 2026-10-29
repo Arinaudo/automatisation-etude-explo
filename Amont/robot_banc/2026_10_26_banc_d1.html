@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Banc d'essai D1 (imitation du Portail Services RTE)</title>
+<style>
+  body{font-family:system-ui,sans-serif; margin:0; background:#f2f4f6; color:#1b2733}
+  .bandeau{background:#9c2e28; color:#fff; padding:8px 16px; font-size:13px}
+  main{max-width:900px; margin:20px auto; background:#fff; padding:20px 28px; border:1px solid #ccd}
+  .stepper{display:flex; gap:8px; margin-bottom:18px; font-size:12px}
+  .stepper span{padding:4px 10px; border:1px solid #ccd; border-radius:12px}
+  .stepper span.on{background:#0f4c81; color:#fff; border-color:#0f4c81}
+  section.etape{display:none} section.etape.on{display:block}
+  .q{margin:14px 0}
+  .q > .lib{font-weight:600; font-size:14px; margin-bottom:5px}
+  mat-radio-group{display:flex; gap:16px} mat-radio-button label{cursor:pointer}
+  input[type=text],textarea{width:100%; padding:6px; font:inherit; box-sizing:border-box}
+  mat-select{display:inline-block; min-width:280px; padding:6px; border:1px solid #889; cursor:pointer}
+  .overlay{position:absolute; background:#fff; border:1px solid #889; z-index:10; max-height:240px; overflow:auto}
+  mat-option{display:block; padding:6px 10px; cursor:pointer} mat-option:hover{background:#e8eef5}
+  .err{color:#9c2e28; font-size:12px}
+  .cal{border:1px solid #889; padding:8px; display:inline-block; background:#fff}
+  .cal button{margin:2px}
+  .hidden{display:none}
+  .info{font-size:12px; color:#556}
+  #journal{font-family:monospace; font-size:11px; background:#f6f6f6; padding:8px; margin-top:20px; white-space:pre-wrap}
+</style>
+</head>
+<body>
+<div class="bandeau">BANC D'ESSAI LOCAL : imitation de la structure du formulaire D1 (relevés des 04/09 et 05/10/2026). Rien n'est envoyé nulle part.</div>
+<main>
+<div class="stepper" id="stepper"><span class="on">1 Société</span><span>2 Demande</span><span>3 Installation</span><span>4 Données techniques</span><span>5 Validation</span></div>
+
+<section class="etape on" data-n="1">
+  <div class="q"><div class="lib">Êtes-vous une société française ?</div>
+    <mat-radio-group data-nom="fr"><mat-radio-button><input type="radio" id="r1" name="fr" value="Oui" hidden><label for="r1">Oui</label></mat-radio-button><mat-radio-button><input type="radio" id="r2" name="fr" value="Non" hidden><label for="r2">Non</label></mat-radio-button></mat-radio-group></div>
+  <div class="q hidden" id="bloc-siren"><div class="lib">Numéro de SIREN de la société (9 caractères)</div><mat-form-field><input type="text" id="siren" maxlength="9"></mat-form-field><div class="info" id="societe"></div></div>
+  <div class="q"><div class="lib">Vous disposez d'une boîte aux lettres</div>
+    <mat-radio-group data-nom="bal"><mat-radio-button><input type="radio" id="r3" name="bal" value="Generique" hidden><label for="r3">Générique ex : contact@entreprise.fr</label></mat-radio-button><mat-radio-button><input type="radio" id="r4" name="bal" value="Nominative" hidden><label for="r4">Nominative ex : prenom.nom@entreprise.fr</label></mat-radio-button></mat-radio-group></div>
+  <div id="contacts" class="hidden">
+    <div class="q"><div class="lib">Nom de l'interlocuteur à contacter</div><input type="text" id="nom"></div>
+    <div class="q"><div class="lib">Prénom de l'interlocuteur à contacter</div><input type="text" id="prenom"></div>
+    <div class="q"><div class="lib">Fonction de l'interlocuteur à contacter</div><input type="text" id="fonction"><div class="err" id="err-fonction"></div></div>
+    <div class="q"><div class="lib">Téléphone de contact</div><input type="text" id="tel" maxlength="16"></div>
+    <div class="q"><div class="lib">Adresse mail de contact</div><input type="text" id="mail"></div>
+  </div>
+  <div class="q"><div class="lib">Êtes-vous mandataire pour le compte d'une autre société ?</div>
+    <mat-radio-group data-nom="mand"><mat-radio-button><input type="radio" id="r5" name="mand" value="Oui" hidden><label for="r5">Oui</label></mat-radio-button><mat-radio-button><input type="radio" id="r6" name="mand" value="Non" hidden><label for="r6">Non</label></mat-radio-button></mat-radio-group></div>
+  <button class="suivant">Suivant</button>
+</section>
+
+<section class="etape" data-n="2">
+  <div class="q"><div class="lib">Type de demande</div>
+    <mat-radio-group data-nom="type"><mat-radio-button><input type="radio" id="r7" name="type" value="Nouveau raccordement HTB" hidden><label for="r7">Nouveau raccordement HTB</label></mat-radio-button><mat-radio-button><input type="radio" id="r8" name="type" value="Modification" hidden><label for="r8">Modification d'installation déjà raccordée en HTB</label></mat-radio-button></mat-radio-group></div>
+  <div class="q"><div class="lib">L'installation à raccorder est une installation de</div>
+    <cortex-checkbox><mat-checkbox><label class="mat-checkbox-layout"><input type="checkbox" id="c1"></label></mat-checkbox> Consommation</cortex-checkbox>
+    <cortex-checkbox><mat-checkbox><label class="mat-checkbox-layout"><input type="checkbox" id="c2"></label></mat-checkbox> Production</cortex-checkbox>
+    <cortex-checkbox><mat-checkbox><label class="mat-checkbox-layout"><input type="checkbox" id="c3"></label></mat-checkbox> Stockage</cortex-checkbox></div>
+  <div class="q"><div class="lib">Quel est le secteur d'activité de votre projet ?</div><mat-select id="secteur" data-options="Autres industries|Chimie et parachimie|Datacenter|Hydrogène|Tertiaire">Choisir</mat-select></div>
+  <div class="q"><div class="lib">Commentaires relatifs à votre demande</div><textarea id="commentaire" maxlength="500"></textarea></div>
+  <button class="suivant">Suivant</button>
+</section>
+
+<section class="etape" data-n="3">
+  <div class="q"><div class="lib">Nom de l'installation</div><input type="text" id="installation"></div>
+  <div class="q"><div class="lib">Nom de la commune du point de raccordement</div><input type="text" id="commune" autocomplete="off"></div>
+  <div class="q"><div class="lib">Code INSEE du point de raccordement</div><mat-select id="insee" data-options="">—</mat-select></div>
+  <div class="q"><div class="lib">Latitude</div><input type="text" id="lat" maxlength="8"></div>
+  <div class="q"><div class="lib">Longitude</div><input type="text" id="lon" maxlength="8"></div>
+  <div class="q"><div class="lib">Date souhaitée de mise à disposition du raccordement</div><input type="text" id="date" readonly><cortex-datepicker-icon title="calendrier" style="cursor:pointer"> 📅</cortex-datepicker-icon><div id="cal" class="cal hidden"></div></div>
+  <div class="q"><div class="lib">Téléchargement de l'extrait cadastral</div><input type="file" accept=".pdf" id="f1" style="display:none"><span class="info" id="f1-nom">aucun fichier</span></div>
+  <button class="suivant">Suivant</button>
+</section>
+
+<section class="etape" data-n="4">
+  <div class="q"><div class="lib">Avez-vous un raccordement existant en HTA ?</div><mat-radio-group><mat-radio-button><input type="radio" id="r9" name="hta" value="Oui" hidden><label for="r9">Oui</label></mat-radio-button><mat-radio-button><input type="radio" id="r10" name="hta" value="Non" hidden><label for="r10">Non</label></mat-radio-button></mat-radio-group></div>
+  <div class="q"><div class="lib">Avez-vous formulé une demande de raccordement en HTA ?</div><mat-radio-group><mat-radio-button><input type="radio" id="r11" name="dhta" value="Oui" hidden><label for="r11">Oui</label></mat-radio-button><mat-radio-button><input type="radio" id="r12" name="dhta" value="Non" hidden><label for="r12">Non</label></mat-radio-button></mat-radio-group></div>
+  <div class="q"><div class="lib">Puissance de raccordement souhaitée pour l'ensemble du site en MW</div><input type="text" id="puissance"></div>
+  <div class="q"><div class="lib">Combien d'alimentations HTB supplémentaires souhaitez-vous ?</div><mat-radio-group><mat-radio-button><input type="radio" id="r13" name="alim" value="0" hidden><label for="r13">0</label></mat-radio-button><mat-radio-button><input type="radio" id="r14" name="alim" value="1" hidden><label for="r14">1</label></mat-radio-button><mat-radio-button><input type="radio" id="r15" name="alim" value="2" hidden><label for="r15">2</label></mat-radio-button></mat-radio-group></div>
+  <div class="q"><div class="lib">Avez-vous besoin d'un niveau minimal de puissance de court-circuit (Scc min) ?</div><mat-radio-group><mat-radio-button><input type="radio" id="r16" name="scc" value="Oui" hidden><label for="r16">Oui</label></mat-radio-button><mat-radio-button><input type="radio" id="r17" name="scc" value="Non" hidden><label for="r17">Non</label></mat-radio-button></mat-radio-group></div>
+  <div class="q"><div class="lib">Puissance minimale de mise en sécurité en MW</div><input type="text" id="securite"></div>
+  <div class="q"><div class="lib">Éléments complémentaires relatifs à l'installation et au niveau de disponibilité souhaité du point de connexion</div><textarea id="complements" maxlength="1000"></textarea></div>
+  <div class="q"><div class="lib">Téléchargement du plan de l'installation</div><input type="file" accept=".pdf" id="f2" style="display:none"><span class="info" id="f2-nom">aucun fichier</span></div>
+  <button class="suivant">Suivant</button>
+</section>
+
+<section class="etape" data-n="5">
+  <div class="q"><mat-slide-toggle id="certif"><label><input type="checkbox" id="certif-in"> En envoyant ce formulaire, je certifie détenir le droit de demander une étude exploratoire.</label></mat-slide-toggle></div>
+  <button id="envoyer" disabled>Envoyer</button>
+  <div class="info">Sur le banc, « Envoyer » n'envoie rien : il écrit seulement dans le journal ci-dessous.</div>
+</section>
+<div id="journal"></div>
+</main>
+<script>
+const $=s=>document.querySelector(s), log=t=>{ $("#journal").textContent+=new Date().toLocaleTimeString()+"  "+t+"\n"; };
+let etape=1;
+function montrer(n){ document.querySelectorAll("section.etape").forEach(s=>s.classList.toggle("on", +s.dataset.n===n)); document.querySelectorAll("#stepper span").forEach((s,i)=>s.classList.toggle("on", i+1===n)); etape=n; log("étape "+n); }
+document.querySelectorAll("button.suivant").forEach(b=>b.addEventListener("click",()=>montrer(etape+1)));
+document.querySelectorAll('input[type=radio]').forEach(r=>r.addEventListener("change",()=>{
+  log("radio "+r.name+" = "+r.value);
+  if(r.name==="fr") $("#bloc-siren").classList.toggle("hidden", r.value!=="Oui");
+  if(r.name==="bal") $("#contacts").classList.remove("hidden");
+}));
+$("#siren").addEventListener("keyup",()=>{ if($("#siren").value.length===9) setTimeout(()=>{ $("#societe").textContent=$("#siren").value==="880034798"?"CASTIGNAC":"Société inconnue"; log("SIREN "+$("#siren").value+" -> "+$("#societe").textContent); },400); });
+$("#fonction").addEventListener("blur",()=>{ $("#err-fonction").textContent=/[^A-Za-zÀ-ÿ' -]/.test($("#fonction").value)?"Le champ n'est pas dans le bon format":""; });
+document.querySelectorAll('input[type=text],textarea').forEach(i=>i.addEventListener("input",()=>log("saisie "+i.id+" = "+i.value.slice(0,60))));
+document.querySelectorAll('input[type=checkbox]').forEach(c=>c.addEventListener("change",()=>{ log("case "+c.id+" = "+c.checked); if(c.id==="certif-in") $("#envoyer").disabled=!c.checked; }));
+// mat-select avec overlay
+function overlay(sel, options, choisir){ fermer(); const r=sel.getBoundingClientRect(); const o=document.createElement("div"); o.className="overlay"; o.style.left=(r.left+scrollX)+"px"; o.style.top=(r.bottom+scrollY)+"px";
+  options.forEach(t=>{ const m=document.createElement("mat-option"); m.textContent=" "+t+" "; m.addEventListener("click",()=>{ choisir(t); fermer(); }); o.appendChild(m); }); document.body.appendChild(o); }
+function fermer(){ document.querySelectorAll(".overlay").forEach(o=>o.remove()); }
+document.querySelectorAll("mat-select").forEach(s=>s.addEventListener("click",()=>{ const opts=(s.dataset.options||"").split("|").filter(Boolean); if(opts.length) overlay(s, opts, t=>{ s.textContent=t; log("liste "+s.id+" = "+t); }); }));
+// commune : autocompletion lente (3 s) et remise a zero du GPS au choix
+let tc=null;
+$("#commune").addEventListener("keyup",()=>{ clearTimeout(tc); fermer(); const v=$("#commune").value.trim(); if(v.length<3) return;
+  const o=document.createElement("div"); o.className="overlay"; o.textContent="Aucun résultat"; const r=$("#commune").getBoundingClientRect(); o.style.left=(r.left+scrollX)+"px"; o.style.top=(r.bottom+scrollY)+"px"; document.body.appendChild(o);
+  tc=setTimeout(()=>{ overlay($("#commune"), [v.charAt(0).toUpperCase()+v.slice(1).toLowerCase(), v.charAt(0).toUpperCase()+v.slice(1).toLowerCase()+"-sur-Mer"], t=>{ $("#commune").value=t; $("#insee").textContent=(t==="Sochaux"?"25547":"99999")+" - "+t; $("#lat").value=""; $("#lon").value=""; log("commune = "+t+", INSEE rempli, GPS effacé"); }); }, 3000); });
+// calendrier : vue annees, mois, jours par aria-label
+const MOIS=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+let pageAnnees=2026;
+function cal(vue, an, mois){ const c=$("#cal"); c.innerHTML=""; c.classList.remove("hidden");
+  const per=document.createElement("button"); per.className="mat-calendar-period-button"; per.textContent="Choisir l'année"; per.onclick=()=>cal("annees"); c.appendChild(per);
+  const nx=document.createElement("button"); nx.className="mat-calendar-next-button"; nx.textContent="›"; nx.onclick=()=>{ pageAnnees+=24; cal("annees"); }; c.appendChild(nx); c.appendChild(document.createElement("br"));
+  const cell=(lbl,txt,f)=>{ const b=document.createElement("button"); b.className="mat-calendar-body-cell"; b.setAttribute("aria-label",lbl); b.textContent=txt; b.onclick=f; c.appendChild(b); };
+  if(vue==="annees") for(let a=pageAnnees;a<pageAnnees+24;a++) cell(String(a),a,()=>cal("mois",a));
+  if(vue==="mois") MOIS.forEach((m,i)=>cell(m+" "+an,m.slice(0,4),()=>cal("jours",an,i)));
+  if(vue==="jours"){ const n=new Date(an,mois+1,0).getDate(); for(let j=1;j<=n;j++) cell(j+" "+MOIS[mois]+" "+an,j,()=>{ $("#date").value=new Date(an,mois,j).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}); c.classList.add("hidden"); log("date = "+$("#date").value); }); }
+}
+document.querySelector("cortex-datepicker-icon").addEventListener("click",()=>cal("jours", 2026, 9));
+["f1","f2"].forEach(id=>$("#"+id).addEventListener("change",e=>{ $("#"+id+"-nom").textContent=e.target.files[0]?e.target.files[0].name:"aucun fichier"; log("pièce "+id+" = "+$("#"+id+"-nom").textContent); }));
+$("#envoyer").addEventListener("click",()=>log("ENVOYER cliqué (sur le vrai portail, la demande partirait)"));
+window.__journal=()=>$("#journal").textContent;
+</script>
+</body>
+</html>

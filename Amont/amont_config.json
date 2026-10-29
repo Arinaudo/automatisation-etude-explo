@@ -1,0 +1,25 @@
+{
+  "_aide": "Configuration locale d'Amont. filieres_optionnelles : [\"natran\"] pour activer NaTran. demandeur : valeurs reprises sur chaque nouvelle fiche de site. utilisateurs : noms proposés dans la case « Vous » du site. delai_relance_jours : délai avant relance d'un courriel sans réponse. mes_adresses : vos adresses, pour deviner le sens d'un .eml déposé. valideurs : qui peut donner la validation responsable (nom choisi dans « Vous » ou adresse Cloudflare Access). validation_requise : sans validation à jour, le robot ne remplit pas le portail et la demande ne passe pas à « déposé ».",
+  "filieres_optionnelles": [],
+  "demandeur": {
+    "demandeur_societe": "CASTIGNAC",
+    "demandeur_siren": "880034798",
+    "interlocuteur_nom": "RINAUDO",
+    "interlocuteur_prenom": "Alexis",
+    "interlocuteur_fonction": "Data Automation and Systems Analyst",
+    "interlocuteur_tel": "0184258000",
+    "interlocuteur_mail": "arinaudo@castignac.com"
+  },
+  "utilisateurs": [
+    "Alexis Rinaudo",
+    "Brayane Obadia"
+  ],
+  "delai_relance_jours": 10,
+  "mes_adresses": [
+    "arinaudo@castignac.com"
+  ],
+  "valideurs": [
+    "Brayane Obadia"
+  ],
+  "validation_requise": true
+}

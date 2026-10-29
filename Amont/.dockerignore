@@ -1,0 +1,5 @@
+donnees/
+.env
+__pycache__/
+*.md
+.fuse_hidden*

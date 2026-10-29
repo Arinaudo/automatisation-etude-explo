@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amont</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+
+  :root{
+    --bg:#EDEFF1; --surface:#FFFFFF; --surface-2:#F6F7F8;
+    --ink:#0F161C; --ink-2:#495866; --ink-3:#77848F;
+    --rule:#D5DBE0; --rule-2:#E5E9EC;
+    --accent:#A8542A; --accent-soft:#F0E2D9;
+    --slate:#2F515C;
+    --ok:#276B4E; --ok-soft:#DDEBE4;
+    --warn:#8A5D0C; --warn-soft:#F4E8D2;
+    --crit:#9C2E28; --crit-soft:#F5DEDC;
+    --info:#2C5C6C; --info-soft:#DCE8EC;
+    --f-rte:#2F515C; --f-rte-soft:#DDE6EA;
+    --f-enedis:#4A6B2A; --f-enedis-soft:#E3ECDA;
+    --f-grdf:#7A5A1E; --f-grdf-soft:#F1E8D6;
+    --nav:#0F161C; --nav-ink:#E7ECF0; --nav-ink-2:#9EACB8;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E1318; --surface:#161D24; --surface-2:#1C242C;
+      --ink:#E7ECF0; --ink-2:#9EACB8; --ink-3:#75838F;
+      --rule:#2A343D; --rule-2:#222B33;
+      --accent:#D5854F; --accent-soft:#33241B;
+      --slate:#7FA6B3;
+      --ok:#6FBF97; --ok-soft:#16281F;
+      --warn:#D6A552; --warn-soft:#2A2214;
+      --crit:#E08880; --crit-soft:#2C1A18;
+      --info:#7FB6C9; --info-soft:#152429;
+      --f-rte:#8FB3C0; --f-rte-soft:#182229;
+      --f-enedis:#A3C47E; --f-enedis-soft:#1B2416;
+      --f-grdf:#D2B06A; --f-grdf-soft:#292115;
+      --nav:#080C10; --nav-ink:#E7ECF0; --nav-ink-2:#8A98A4;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1318; --surface:#161D24; --surface-2:#1C242C;
+    --ink:#E7ECF0; --ink-2:#9EACB8; --ink-3:#75838F;
+    --rule:#2A343D; --rule-2:#222B33;
+    --accent:#D5854F; --accent-soft:#33241B;
+    --slate:#7FA6B3;
+    --ok:#6FBF97; --ok-soft:#16281F;
+    --warn:#D6A552; --warn-soft:#2A2214;
+    --crit:#E08880; --crit-soft:#2C1A18;
+    --info:#7FB6C9; --info-soft:#152429;
+    --f-rte:#8FB3C0; --f-rte-soft:#182229;
+    --f-enedis:#A3C47E; --f-enedis-soft:#1B2416;
+    --f-grdf:#D2B06A; --f-grdf-soft:#292115;
+    --nav:#080C10; --nav-ink:#E7ECF0; --nav-ink-2:#8A98A4;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; font-size:14px; line-height:1.5; margin:0; -webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Archivo,"IBM Plex Sans",sans-serif; margin:0; text-wrap:balance}
+  a{color:inherit}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace; font-variant-numeric:tabular-nums}
+
+  /* barre de navigation du site */
+  .topbar{background:var(--nav); color:var(--nav-ink); border-bottom:3px solid var(--accent)}
+  .topbar .in{max-width:1240px; margin:0 auto; padding:0 22px; display:flex; align-items:center; gap:16px; min-height:52px; flex-wrap:wrap}
+  .logo{font-family:Archivo,sans-serif; font-weight:700; letter-spacing:-.01em; font-size:15px; display:flex; align-items:baseline; gap:8px}
+  .logo small{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600}
+  nav.menu{display:flex; gap:2px; flex:1; flex-wrap:wrap; padding:9px 0}
+  nav.menu a{text-decoration:none; padding:6px 9px; font-size:13px; font-weight:500; color:var(--nav-ink-2); border:1.5px solid transparent; border-radius:3px; white-space:nowrap}
+  nav.menu a.on{color:var(--nav-ink); border-color:var(--accent)}
+  nav.menu a:hover{color:var(--nav-ink); border-color:var(--nav-ink-2)}
+  nav.menu a.on:hover{border-color:var(--accent)}
+  nav.menu .badge{display:inline-block; min-width:17px; padding:0 5px; margin-left:5px; border-radius:9px; background:var(--accent); color:#fff; font-family:"IBM Plex Mono",monospace; font-size:10px; line-height:16px; text-align:center; font-weight:600}
+  .who{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--nav-ink-2); display:flex; align-items:center; gap:6px}
+  .who b{color:var(--nav-ink); font-weight:500}
+  .who input{width:128px; background:transparent; color:var(--nav-ink); border:1px solid var(--nav-ink-2); font-family:"IBM Plex Mono",monospace; font-size:11px; padding:4px 7px}
+  .who input:placeholder-shown{border-color:var(--accent)}
+  .proto{background:var(--accent-soft); color:var(--accent); font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.06em; text-align:center; padding:5px 16px}
+
+  .wrap{max-width:1240px; margin:0 auto; padding:24px 22px 72px}
+  .crumbs{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3); margin-bottom:14px}
+  .crumbs a{color:var(--ink-3); text-decoration:none}
+  .crumbs a:hover{color:var(--accent)}
+  .pagehead{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px; padding-bottom:16px; border-bottom:2px solid var(--ink); margin-bottom:22px}
+  .pagehead h1{font-size:26px; font-weight:700; letter-spacing:-.02em; line-height:1.1}
+  .pagehead .sub{color:var(--ink-2); margin:6px 0 0; max-width:70ch}
+  .totaux{display:flex; gap:26px; flex-wrap:wrap}
+  .tot .v{font-family:Archivo,sans-serif; font-size:24px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1}
+  .tot .k{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); margin-top:5px}
+
+  .bloc{background:var(--surface); border:1px solid var(--rule); border-radius:3px; overflow:hidden; margin-bottom:22px}
+  .bloc-head{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:12px 16px; border-bottom:1px solid var(--rule); flex-wrap:wrap}
+  h2{font-size:14px; font-weight:600}
+  .tbl-scroll{overflow-x:auto}
+  table{width:100%; border-collapse:collapse}
+  th{font-family:"IBM Plex Mono",monospace; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3); font-weight:500; text-align:left; padding:9px 14px; border-bottom:1px solid var(--rule); white-space:nowrap}
+  th.num,td.num{text-align:right}
+  td{padding:10px 14px; border-bottom:1px solid var(--rule-2); vertical-align:top}
+  tbody tr:last-child td{border-bottom:0}
+  tr.lien{cursor:pointer}
+  tr.lien:hover td{background:var(--surface-2)}
+  table.matrice{min-width:900px}
+  table.matrice th.fil{text-align:center}
+  table.matrice td.cell{text-align:center; padding:8px 10px}
+  .cellbtn{display:inline-flex; flex-direction:column; align-items:center; gap:3px; min-width:128px; padding:7px 10px; border:1px solid var(--rule); border-radius:3px; background:var(--surface); cursor:pointer; font:inherit; color:var(--ink); text-decoration:none}
+  .cellbtn:hover{border-color:var(--ink-3); background:var(--surface-2)}
+  .cellbtn.vide{border-style:dashed; color:var(--ink-3); font-size:12px}
+  .cellbtn .e{font-size:11px; color:var(--ink-3); font-family:"IBM Plex Mono",monospace}
+  .cellbtn .e.crit{color:var(--crit); font-weight:600}
+  .cellbtn .e.warn{color:var(--warn); font-weight:600}
+  .projname{font-weight:600}
+  .projname a{text-decoration:none}
+  .projname a:hover{color:var(--accent)}
+  .projmeta{color:var(--ink-3); font-size:12px; margin-top:2px}
+
+  .alertes{display:flex; flex-direction:column; gap:1px; background:var(--rule-2); border:1px solid var(--rule); border-radius:3px; overflow:hidden; margin-bottom:22px}
+  .al{display:flex; gap:12px; align-items:baseline; padding:9px 14px; background:var(--surface); flex-wrap:wrap}
+  .al.crit{border-left:3px solid var(--crit)}
+  .al.warn{border-left:3px solid var(--warn)}
+  .al code{font-family:"IBM Plex Mono",monospace; font-size:11.5px; font-weight:600; color:var(--accent)}
+  .al code a{text-decoration:none}
+  .al span{color:var(--ink-2)}
+  .al b{color:var(--ink); font-weight:600}
+
+  .ftag{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; padding:2px 7px; border-radius:2px; font-weight:600; white-space:nowrap}
+  .ftag.rte_ee,.ftag.rte_ptf{background:var(--f-rte-soft); color:var(--f-rte)}
+  .ftag.enedis{background:var(--f-enedis-soft); color:var(--f-enedis)}
+  .ftag.grdf{background:var(--f-grdf-soft); color:var(--f-grdf)}
+  .pill{display:inline-block; padding:2px 8px; border-radius:11px; font-size:11px; font-weight:600; white-space:nowrap}
+  .pill.ok{background:var(--ok-soft); color:var(--ok)}
+  .pill.warn{background:var(--warn-soft); color:var(--warn)}
+  .pill.crit{background:var(--crit-soft); color:var(--crit)}
+  .pill.info{background:var(--info-soft); color:var(--info)}
+  .pill.neutre{background:var(--surface-2); color:var(--ink-2); border:1px solid var(--rule)}
+  .kv{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+  .ech{font-family:"IBM Plex Mono",monospace; font-size:12px}
+  .ech .j{font-size:11px; color:var(--ink-3); display:block; margin-top:2px}
+  .ech .j.crit{color:var(--crit); font-weight:600}
+  .ech .j.warn{color:var(--warn); font-weight:600}
+  .lieu{color:var(--ink-3); font-size:12px; margin-top:2px}
+  .ref{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); font-weight:600}
+  .prog{display:flex; gap:2px; margin-top:6px}
+  .prog i{height:3px; flex:1; background:var(--rule); border-radius:2px}
+  .prog i.on{background:var(--slate)}
+  .prog i.cur{background:var(--accent)}
+
+  /* fiche projet */
+  .grid2{display:grid; grid-template-columns:minmax(300px,1.2fr) minmax(280px,1fr); gap:22px; align-items:start}
+  @media(max-width:860px){ .grid2{grid-template-columns:1fr} }
+  .synth{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--rule-2); border:1px solid var(--rule); border-radius:3px; overflow:hidden; margin-bottom:22px}
+  .synth a{display:block; background:var(--surface); padding:13px 14px; text-decoration:none}
+  .synth a:hover{background:var(--surface-2)}
+  .synth .t{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px}
+  .synth .code{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--accent); font-weight:600}
+  .synth .next{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-2); margin-top:6px; line-height:1.4}
+  .synth .next.crit{color:var(--crit)} .synth .next.warn{color:var(--warn)}
+  .synth .vide{color:var(--ink-3); font-size:12.5px}
+  .jal{list-style:none; margin:0; padding:0 16px}
+  .jal li{display:flex; gap:11px; align-items:baseline; padding:8px 0; border-bottom:1px dashed var(--rule); flex-wrap:wrap}
+  .jal li:last-child{border-bottom:0}
+  .jal .dt{font-family:"IBM Plex Mono",monospace; font-size:11.5px; flex:0 0 82px; font-variant-numeric:tabular-nums}
+  .jal .tx{flex:1; font-size:12.5px; color:var(--ink-2); min-width:200px}
+  .jal li.fait .tx{color:var(--ink-3); text-decoration:line-through; text-decoration-thickness:1px}
+  .jal .who{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink-3)}
+  .fichier{display:flex; gap:12px; align-items:center; padding:9px 16px; border-bottom:1px solid var(--rule-2); font-size:13px}
+  .fichier:last-child{border-bottom:0}
+  .fichier .ic{width:26px; height:32px; border:1px solid var(--rule); border-radius:2px; background:var(--surface-2); flex:0 0 26px; position:relative}
+  .fichier .ic::after{content:"PDF"; position:absolute; bottom:3px; left:0; right:0; text-align:center; font-family:"IBM Plex Mono",monospace; font-size:7px; color:var(--ink-3); letter-spacing:.05em}
+  .fichier .n{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .fichier .m{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-3); white-space:nowrap}
+  .depot{margin:10px 16px 14px; padding:14px; border:1px dashed var(--rule); border-radius:3px; text-align:center; color:var(--ink-3); font-size:12.5px}
+  .journal td{font-size:12.5px}
+  .journal .dt{font-family:"IBM Plex Mono",monospace; white-space:nowrap; font-size:11.5px}
+  .journal .chg{font-family:"IBM Plex Mono",monospace; font-size:11.5px}
+  .journal .chg s{color:var(--ink-3)}
+  .journal .who{color:var(--ink-3); font-size:11.5px; white-space:nowrap}
+
+  /* fiche demande */
+  .champs{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px 14px; padding:16px}
+  .champs .sep{grid-column:1/-1; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); border-top:1px dashed var(--rule); padding-top:8px; margin-top:4px}
+  label{display:block; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-3); margin-bottom:3px; font-family:"IBM Plex Mono",monospace}
+  input,select,textarea{width:100%; font:inherit; font-size:13px; padding:6px 8px; background:var(--surface); color:var(--ink); border:1px solid var(--rule); border-radius:2px}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent); outline-offset:-1px; border-color:var(--accent)}
+  textarea{min-height:70px; resize:vertical}
+  .actions{display:flex; gap:8px; align-items:center; padding:0 16px 16px; flex-wrap:wrap}
+  button,.btn{font:inherit; font-size:12.5px; font-weight:600; padding:7px 14px; border-radius:2px; border:1px solid var(--rule); background:var(--surface); color:var(--ink); cursor:pointer; text-decoration:none; display:inline-block}
+  button:hover,.btn:hover{border-color:var(--ink-3)}
+  button.primaire,a.btn.primaire{background:var(--accent); border-color:var(--accent); color:#fff}
+  :root[data-theme="dark"] button.primaire,:root[data-theme="dark"] a.btn.primaire{color:#14100D}
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) button.primaire,:root:not([data-theme="light"]) a.btn.primaire{color:#14100D} }
+  button:focus-visible,.btn:focus-visible,a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+  .etat{font-size:12px; color:var(--ink-3)}
+  .pieces{font-size:12.5px; line-height:1.55; color:var(--ink-2); margin:0; padding:12px 16px 16px}
+  .pieces b{color:var(--ink); font-weight:600}
+  .toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:9px 16px; border-radius:3px; font-size:13px; box-shadow:0 8px 24px -8px rgba(0,0,0,.4); opacity:0; pointer-events:none; transition:opacity .2s}
+  .toast.on{opacity:1}
+  .note{margin-top:22px; padding:14px 16px; border-left:3px solid var(--accent); background:var(--surface); border-radius:0 3px 3px 0; color:var(--ink-2); font-size:12.5px; max-width:78ch}
+  .note b{color:var(--ink)}
+  .mail{padding:16px; font-family:"IBM Plex Mono",monospace; font-size:12px; line-height:1.6; color:var(--ink-2); white-space:pre-wrap}
+  .mail b{color:var(--ink); font-weight:600}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+.proto{display:none}
+.err{background:var(--crit-soft); color:var(--crit); padding:10px 14px; border-radius:3px; margin-bottom:16px; font-size:13px}
+.chargement{color:var(--ink-3); padding:40px; text-align:center}
+.fichier a{text-decoration:none}
+.fichier a:hover{color:var(--accent)}
+.fichier button{padding:3px 8px; font-size:11px}
+.depot{cursor:pointer}
+.depot.on{border-color:var(--accent); color:var(--accent); background:var(--accent-soft)}
+.depot select{width:auto; display:inline-block; margin-left:8px; font-size:12px; padding:3px 6px}
+.ftag.natran{background:var(--f-grdf-soft); color:var(--f-grdf); outline:1px dashed var(--f-grdf); outline-offset:-1px}
+/* sites, sources et fiche identite */
+.fiche-g{padding:4px 16px 12px}
+.fiche-g h3{font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); font-weight:500; border-top:1px dashed var(--rule); padding-top:10px; margin:10px 0 6px}
+.fiche-g:first-child h3{border-top:0}
+.fl{display:grid; grid-template-columns:minmax(150px,210px) 1fr minmax(120px,190px); gap:10px; align-items:center; padding:4px 0}
+.fl label{margin:0; font-size:10.5px}
+.fl .prov{font-size:11px; color:var(--ink-3); line-height:1.3; overflow:hidden; text-overflow:ellipsis}
+.fl .prov a{text-decoration:none}
+.fl.av input,.fl.av textarea{border-color:var(--warn); background:var(--warn-soft)}
+.fl.mod input,.fl.mod textarea{border-color:var(--accent)}
+.fl textarea{min-height:52px}
+@media(max-width:700px){ .fl{grid-template-columns:1fr} }
+.prop{display:grid; grid-template-columns:1fr auto; gap:12px; align-items:start; padding:10px 16px; border-bottom:1px solid var(--rule-2); font-size:12.5px}
+.prop:last-child{border-bottom:0}
+.prop .q{color:var(--ink-3); font-size:11.5px; margin-top:3px; line-height:1.4}
+.prop .pb{display:flex; gap:6px}
+.prop button{padding:3px 9px; font-size:11.5px}
+.pret{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1px; background:var(--rule-2); border-top:1px solid var(--rule)}
+.pret>div{background:var(--surface); padding:12px 14px; font-size:12.5px}
+.pret .t{display:flex; justify-content:space-between; align-items:center; margin-bottom:6px}
+.pret .bar{height:4px; background:var(--rule); border-radius:2px; margin:6px 0 8px; overflow:hidden}
+.pret .bar i{display:block; height:100%; background:var(--slate)}
+.pret .bar i.ok{background:var(--ok)}
+.pret .manq{color:var(--ink-3); font-size:11.5px; line-height:1.45}
+.pret .canal{font-size:11px; color:var(--ink-3); margin-top:6px}
+.src-st{font-family:"IBM Plex Mono",monospace; font-size:10.5px}
+button:disabled,.btn[disabled]{opacity:.45; cursor:not-allowed}
+pre.journal-robot{font-family:"IBM Plex Mono",monospace; font-size:11px; line-height:1.45; background:var(--surface-2); border:1px solid var(--rule); border-radius:2px; padding:8px 10px; max-height:260px; overflow:auto; white-space:pre-wrap; margin:6px 0 0; color:var(--ink-2)}
+/* 0.3 : suivi des dossiers et des echanges */
+.cellbtn .act{font-size:11px; line-height:1.3; color:var(--ink-2); max-width:170px; text-align:center}
+.cellbtn .act.crit{color:var(--crit); font-weight:600}
+.cellbtn .act.warn{color:var(--warn); font-weight:600}
+.cellbtn .act.attente{color:var(--ink-3); font-style:italic}
+.cellbtn .act.fait{color:var(--ink-3)}
+.cellbtn .mailb{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--warn)}
+.cellbtn.so{border-style:dotted; color:var(--ink-3); background:var(--surface-2); font-size:11.5px}
+.cellsub{display:block; margin-top:3px; font-size:10.5px; color:var(--ink-3); text-decoration:none}
+.cellsub:hover{color:var(--accent)}
+td.ech-col{font-size:12px; min-width:170px}
+td.ech-col .o{color:var(--ink-2); overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical}
+.actbox{padding:12px 16px; display:flex; gap:12px; align-items:baseline; flex-wrap:wrap; border-left:3px solid var(--slate)}
+.actbox.crit{border-left-color:var(--crit)} .actbox.warn{border-left-color:var(--warn)} .actbox.attente{border-left-color:var(--rule)}
+.actbox .t{font-weight:600; flex:1; min-width:220px}
+.actbox .s{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink-3); text-transform:uppercase; letter-spacing:.08em}
+.fil-ech{list-style:none; margin:0; padding:0}
+.fil-ech li{padding:10px 16px; border-bottom:1px solid var(--rule-2); display:grid; grid-template-columns:86px 1fr auto; gap:12px; align-items:start}
+.fil-ech li:last-child{border-bottom:0}
+.fil-ech .dt{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-2)}
+.fil-ech .dt small{display:block; color:var(--ink-3); font-size:10.5px}
+.fil-ech .ob{font-weight:600; font-size:13px}
+.fil-ech .mt{font-size:11.5px; color:var(--ink-3); margin-top:2px}
+.fil-ech .rs{font-size:12.5px; color:var(--ink-2); margin-top:6px; white-space:pre-wrap; max-height:7.5em; overflow:hidden}
+.fil-ech .bt{display:flex; flex-direction:column; gap:4px; align-items:flex-end}
+.fil-ech .bt button{padding:3px 8px; font-size:11px; white-space:nowrap}
+.sens{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:1px 6px; border-radius:2px; font-weight:600; margin-right:6px}
+.sens.envoye{background:var(--info-soft); color:var(--info)}
+.sens.recu{background:var(--ok-soft); color:var(--ok)}
+.sens.note{background:var(--surface-2); color:var(--ink-2); border:1px solid var(--rule)}
+@media(max-width:700px){ .fil-ech li{grid-template-columns:1fr} .fil-ech .bt{flex-direction:row; align-items:center} }
+details.ajout{border-top:1px solid var(--rule)}
+details.ajout summary{cursor:pointer; padding:10px 16px; font-size:12.5px; font-weight:600; color:var(--accent); list-style:none}
+details.ajout summary::-webkit-details-marker{display:none}
+details.ajout[open] summary{border-bottom:1px dashed var(--rule)}
+.chk{display:flex; gap:6px; align-items:center; font-size:12.5px; color:var(--ink-2); padding-top:18px}
+.chk input{width:auto}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{padding:4px 10px; font-size:12px; border-radius:12px}
+.chip.on{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.backend{padding:12px 16px; font-size:12.5px; color:var(--ink-2); line-height:1.55}
+/* 0.4 : commentaires, points a verifier, documents, robot */
+.fl{grid-template-columns:minmax(150px,210px) 1fr minmax(120px,190px) 26px}
+.fl .flag{padding:2px 0; width:26px; font-size:13px; line-height:1; border-color:transparent; background:transparent; color:var(--ink-3)}
+.fl .flag:hover{color:var(--accent); border-color:var(--rule)}
+.fl.sig .flag{color:var(--accent)}
+.fl.sig label{color:var(--accent)}
+.fl.sig input,.fl.sig textarea{outline:1.5px solid var(--accent); outline-offset:1px}
+.fl-sig{grid-column:1/-1; margin:2px 0 6px; padding:7px 10px; background:var(--accent-soft); border-radius:2px; font-size:12px; color:var(--ink-2); display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.fl-sig[hidden]{display:none}
+.fl-sig b{color:var(--accent)}
+.fl .fl-sig input{background:var(--surface); border-color:var(--rule); outline:none}
+.fl-sig input{flex:1; min-width:180px; padding:4px 7px; font-size:12px}
+.fl-sig button{padding:3px 9px; font-size:11.5px}
+@media(max-width:700px){ .fl{grid-template-columns:1fr 26px} .fl label,.fl .prov{grid-column:1/-1} }
+.coms{list-style:none; margin:0; padding:0}
+.coms li{padding:11px 16px; border-bottom:1px solid var(--rule-2); display:grid; grid-template-columns:1fr auto; gap:10px}
+.coms li:last-child{border-bottom:0}
+.coms li.pt{border-left:3px solid var(--accent); background:linear-gradient(90deg,var(--accent-soft),transparent 60%)}
+.coms li.pt.ok{border-left-color:var(--ok); background:none}
+.coms .meta{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink-3)}
+.coms .tx{font-size:13px; margin-top:3px; white-space:pre-wrap}
+.coms .rep{font-size:12px; color:var(--ok); margin-top:4px}
+.coms .cib{display:inline-block; font-size:10.5px; font-family:"IBM Plex Mono",monospace; color:var(--accent); border:1px solid var(--accent); border-radius:2px; padding:0 5px; margin-right:6px}
+.coms .bt{display:flex; flex-direction:column; gap:4px; align-items:flex-end}
+.coms .bt input{width:170px; padding:3px 6px; font-size:11.5px}
+.coms .bt button{padding:3px 8px; font-size:11px; white-space:nowrap}
+.ptchip{display:inline-block; margin-top:5px; font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--accent); text-decoration:none; border:1px solid var(--accent); border-radius:2px; padding:0 5px}
+.res{display:grid; grid-template-columns:1fr auto; gap:6px 12px; padding:10px 16px; border-bottom:1px solid var(--rule-2); align-items:start}
+.res:last-child{border-bottom:0}
+.res .l{font-weight:600; font-size:13px}
+.res .l a{text-decoration:none; color:var(--accent)}
+.res .l a:hover{text-decoration:underline}
+.res .n{font-size:12px; color:var(--ink-2); margin-top:2px}
+.res .m{font-family:"IBM Plex Mono",monospace; font-size:10.5px; color:var(--ink-3); margin-top:3px}
+.res .bt{display:flex; gap:4px; align-items:center}
+.res .bt button{padding:3px 8px; font-size:11px}
+.res.cur{background:var(--surface-2)}
+.d1 table td{padding:6px 12px; font-size:12.5px}
+.d1 td.q{color:var(--ink-2)}
+.d1 td.v{font-family:"IBM Plex Mono",monospace; font-size:12px; word-break:break-word}
+.d1 tr.manque td.v{color:var(--crit); font-weight:600}
+.d1 tr.et td{background:var(--surface-2); font-family:"IBM Plex Mono",monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+.cmd{display:flex; gap:8px; align-items:center; margin:12px 16px; padding:9px 12px; background:var(--nav); color:var(--nav-ink); border-radius:3px; font-family:"IBM Plex Mono",monospace; font-size:12px; overflow-x:auto}
+.cmd{overflow:hidden}
+.cmd code{flex:1; min-width:0; white-space:nowrap; overflow-x:auto}
+.cmd button{flex:0 0 auto}
+.cmd button{padding:3px 9px; font-size:11px; background:transparent; color:var(--nav-ink); border-color:var(--nav-ink-2)}
+.backend code{font-family:"IBM Plex Mono",monospace; font-size:11.5px; background:var(--surface-2); padding:1px 5px; border-radius:2px}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="in">
+  <div class="logo"><span id="enseigne">Castignac</span> <small>Amont</small></div>
+  <nav class="menu" id="menu">
+    <a href="#/" data-r="accueil">Tableau de bord</a>
+    <a href="#/sites" data-r="sites" title="Sites et sources">Sites</a>
+    <a href="#/projets" data-r="projets">Projets</a>
+    <a href="#/demandes" data-r="demandes">Demandes</a>
+    <a href="#/mails" data-r="mails">Mails</a>
+    <a href="#/contacts" data-r="contacts">Contacts</a>
+    <a href="#/verifier" data-r="verifier">À vérifier<span class="badge" id="nb-verif" hidden></span></a>
+    <a href="#/documents" data-r="documents">Documents</a>
+    <a href="#/journal" data-r="journal">Journal</a>
+    <a href="#/alerte" data-r="alerte">Alertes</a>
+  </nav>
+  <div class="who" id="who"><label for="moi" style="margin:0;color:var(--nav-ink-2)">Vous</label><input id="moi" list="liste-moi" placeholder="votre nom" autocomplete="off"><datalist id="liste-moi"></datalist></div>
+</div></div>
+
+<div class="wrap" id="app"><div class="chargement">Chargement du registre…</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  /* ---------- API ---------- */
+  function lireMoi(){ try{ return localStorage.getItem("amont_auteur")||""; }catch(e){ return ""; } }
+  function entetes(json){ const h={}; if(json) h["Content-Type"]="application/json"; const m=lireMoi(); if(m) h["X-Amont-Auteur"]=encodeURIComponent(m); return h; }
+  async function api(chemin, options){
+    const r = await fetch("/api"+chemin, Object.assign({headers:entetes(true)}, options||{}));
+    if(r.status===204) return null;
+    const ct=r.headers.get("content-type")||"";
+    const corps = ct.includes("json") ? await r.json() : await r.text();
+    if(!r.ok){ const m=(corps&&corps.erreur)||(corps&&corps.detail&&JSON.stringify(corps.detail))||("erreur "+r.status); throw new Error(m); }
+    return corps;
+  }
+  let REF=null, MOI="";
+
+  /* ---------- utilitaires ---------- */
+  const $=s=>document.querySelector(s);
+  const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const nb=v=>(v==null||v==="")?"—":Number(v).toLocaleString("fr-FR",{maximumFractionDigits:0});
+  const fmt=s=>{ if(!s) return ""; const [a,m,j]=s.slice(0,10).split("-"); return j+"/"+m+"/"+a; };
+  const F=f=>REF.filieres[f]||REF.filieres.rte_ee;
+  const classePill=s=>{ if(["etude_recue","ptf_recue","file_attente","convention","pdr_recue","acceptee","mise_en_service","devis_recu","accepte","clos"].includes(s)) return "ok"; if(s==="pret_validation") return "warn"; if(s==="irrecevable") return "crit"; if(["depose","recevable","confirmation_demandee","qualifiee","travaux"].includes(s)) return "info"; return "neutre"; };
+  function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("on"); setTimeout(()=>el.classList.remove("on"),2600); }
+  function head(t,sub,tot){ return '<div class="pagehead"><div><h1>'+t+'</h1>'+(sub?'<p class="sub">'+sub+'</p>':'')+'</div>'+(tot||'')+'</div>'; }
+  function crumbs(parts){ return '<div class="crumbs">'+parts.map(p=>p.href?'<a href="'+p.href+'">'+esc(p.l)+'</a>':esc(p.l)).join(' › ')+'</div>'; }
+  function echHtml(pe){ if(!pe) return "—"; const s=pe.jours<0?"crit":(pe.jours<=14?"warn":""); return '<div class="ech">'+fmt(pe.date)+'<span class="j '+s+'">'+(pe.jours<0?("dépassée de "+(-pe.jours)+" j"):("dans "+pe.jours+" j"))+' · '+esc(pe.libelle.split(",")[0])+'</span></div>'; }
+  function idx(d){ return F(d.filiere).etapes.findIndex(e=>e.cle===d.statut); }
+  function journalRows(list, avecDemande){
+    if(!list.length) return '<tr><td class="etat">Aucun changement enregistré.</td></tr>';
+    return list.map(j=>'<tr><td class="dt">'+esc(j.horodatage)+'</td>'+(avecDemande?'<td>'+(j.demande_id?'<a class="ref" href="#/demande/'+esc(j.demande_id)+'" style="text-decoration:none">'+esc(j.demande_id)+'</a>':'')+'</td>':'')+'<td class="chg">'+esc(j.champ)+' : '+(j.avant?'<s>'+esc(j.avant)+'</s> → ':'')+esc(j.apres)+'</td><td class="who">'+esc(j.auteur)+' · '+esc(j.origine)+'</td></tr>').join("");
+  }
+  function lignesDemandes(list, projets){
+    return list.map(d=>{ const f=F(d.filiere), i=idx(d);
+      const prog='<div class="prog">'+f.etapes.map((e,k)=>'<i class="'+(i<0?"":(k<i?"on":(k===i?"cur":"")))+'"></i>').join("")+'</div>';
+      let sup=""; if(d.domaine) sup='<div class="lieu kv">'+d.domaine.n+' · '+d.domaine.u+'</div>';
+      return '<tr class="lien" data-href="#/demande/'+esc(d.id)+'"><td><div class="projname">'+esc(d.site||(projets[d.projet_code]||d.projet_code))+'</div><div class="lieu">'+esc([d.commune,d.departement].filter(Boolean).join(" · "))+'</div>'+prog+'</td>'+
+        '<td><span class="ftag '+d.filiere+'">'+f.court+'</span></td><td><span class="ref">'+esc(d.num_etude||d.ref_dossier||d.id)+'</span></td>'+
+        '<td class="num kv">'+esc(d.dimension||"—")+sup+'</td><td><span class="pill '+classePill(d.statut)+'">'+esc(d.libelle_statut)+'</span></td><td>'+echHtml(d.prochaine_echeance)+'</td>'+
+        '<td class="num kv">'+(d.cout_client_keur?nb(d.cout_client_keur)+' k€':'—')+'</td></tr>'; }).join("");
+  }
+  const enteteListe='<thead><tr><th>Site</th><th>Filière</th><th>Réf.</th><th class="num">Dimension</th><th>Étape</th><th>Prochaine échéance</th><th class="num">Coût client</th></tr></thead>';
+  const court=(t,n)=>{ t=String(t||""); return t.length>n?t.slice(0,n-1).trimEnd()+"…":t; };
+  const cellule=d=>{ const pe=d.prochaine_echeance; let e; if(pe){ const s=pe.jours<0?"crit":(pe.jours<=14?"warn":""); e='<span class="e '+s+'">'+(pe.jours<0?("dépassée "+(-pe.jours)+" j"):("J-"+pe.jours))+'</span>'; } else e='<span class="e">'+esc(d.dimension||"")+'</span>';
+    const a=d.action||{}; const att=d.echanges_resume&&d.echanges_resume.attente;
+    return '<a class="cellbtn" href="#/demande/'+esc(d.id)+'" title="'+esc(a.texte||"")+'"><span class="pill '+classePill(d.statut)+'">'+esc(d.libelle_statut)+'</span>'+(a.texte?'<span class="act '+(a.niveau||"")+'">'+esc(court(a.texte,64))+'</span>':'')+e+(att?'<span class="mailb">✉ sans réponse '+att.jours+' j</span>':'')+'</a>'; };
+  function echCol(r){ if(!r||!r.dernier) return '<span class="etat">Aucun échange</span>'; const d=r.dernier;
+    return '<div class="kv" style="font-size:11px">'+fmt(d.date)+' · <span class="sens '+d.sens+'">'+esc(d.libelle_sens)+'</span></div><div class="o">'+esc(d.objet||"(sans objet)")+'</div>'+(r.nb_attente?'<div class="kv" style="font-size:11px;color:var(--warn);margin-top:2px">'+r.nb_attente+' sans réponse'+(r.attente?', depuis '+r.attente.jours+' j':'')+'</div>':''); }
+  function echangesHtml(list, opts){ opts=opts||{};
+    if(!list.length) return '<p class="pieces">Aucun échange enregistré.</p>';
+    return '<ul class="fil-ech">'+list.map(e=>'<li><div class="dt">'+fmt(e.date)+'<small>'+esc((e.date||"").slice(11,16))+' · '+esc(e.libelle_canal)+'</small></div><div><div class="ob"><span class="sens '+e.sens+'">'+esc(e.libelle_sens)+'</span>'+esc(e.objet||"(sans objet)")+'</div>'+
+      '<div class="mt">'+(e.contact_nom?esc(e.contact_nom)+(e.contact_organisation?' ('+esc(e.contact_organisation)+')':''):esc(e.sens==="recu"?e.expediteur:e.destinataires))+(opts.avecDemande?(e.demande_id?' · <a class="ref" href="#/demande/'+esc(e.demande_id)+'" style="text-decoration:none">'+esc(e.demande_id)+'</a>':' · <a class="ref" href="#/projet/'+esc(e.projet_code)+'" style="text-decoration:none">'+esc(e.projet_code)+'</a>'):'')+
+      (e.attend_reponse?' · <b style="color:var(--warn)">sans réponse depuis '+e.jours_attente+' j</b>'+(e.relance_le?' · relance le '+fmt(e.relance_le):''):(e.repondu_le&&e.sens==="envoye"?' · répondu le '+fmt(e.repondu_le):''))+(e.fichier?' · <a href="/api/echanges/'+e.id+'/fichier">.eml</a>':'')+'</div>'+
+      (e.resume?'<div class="rs">'+esc(e.resume)+'</div>':'')+'</div><div class="bt">'+
+      (e.sens==="envoye"?(e.attend_reponse?'<button data-action="clore-attente" data-ech="'+e.id+'">Réponse reçue</button>':'<button data-action="rouvrir-attente" data-ech="'+e.id+'">Attendre une réponse</button>'):'')+
+      '<button data-action="supprimer-echange" data-ech="'+e.id+'" title="Retirer">×</button></div></li>').join("")+'</ul>'; }
+  function commentairesHtml(list, opts){ opts=opts||{};
+    if(!list.length) return '<p class="pieces">'+(opts.vide||"Aucun commentaire.")+'</p>';
+    const pts=list.filter(c=>c.a_verifier&&c.statut==="ouvert"), autres=list.filter(c=>!(c.a_verifier&&c.statut==="ouvert"));
+    return '<ul class="coms">'+pts.concat(autres).map(c=>{ const pt=c.a_verifier, ok=c.statut==="verifie";
+      return '<li class="'+(pt?"pt"+(ok?" ok":""):"")+'"><div><div class="meta">'+esc(c.auteur||"interne")+' · '+esc((c.cree_le||"").slice(0,16))+(opts.avecProjet?' · <a class="ref" href="#/projet/'+esc(c.projet_code)+'" style="text-decoration:none">'+esc(c.projet_nom||c.projet_code)+'</a>':'')+(c.demande_id?' · <a class="ref" href="#/demande/'+esc(c.demande_id)+'" style="text-decoration:none">'+esc(c.demande_id)+'</a>':'')+(pt?(ok?' · <span style="color:var(--ok)">vérifié par '+esc(c.traite_par||"")+' le '+fmt(c.traite_le)+'</span>':' · <b style="color:var(--accent)">à vérifier</b>'):'')+'</div>'+
+        '<div class="tx">'+(c.libelle_cible?(c.cible&&c.cible.startsWith("fiche:")?'<a class="cib" href="#/site/'+esc(c.projet_code)+'" style="text-decoration:none">'+esc(c.libelle_cible)+'</a>':'<span class="cib">'+esc(c.libelle_cible)+'</span>'):'')+esc(c.texte)+'</div>'+(c.reponse?'<div class="rep">↳ '+esc(c.reponse)+'</div>':'')+'</div>'+
+        '<div class="bt">'+(pt&&!ok?'<input placeholder="réponse (facultatif)" id="rep-'+c.id+'"><button class="primaire" data-action="verifier-point" data-com="'+c.id+'">Vérifié</button>':'')+(pt&&ok?'<button data-action="rouvrir-point" data-com="'+c.id+'">Rouvrir</button>':'')+'<button data-action="supprimer-com" data-com="'+c.id+'" title="Retirer">×</button></div></li>'; }).join("")+'</ul>'; }
+  function formCommentaire(o){
+    return '<details class="ajout"'+(o.ouvert?' open':'')+'><summary>+ Commenter, ou signaler un point à faire vérifier</summary><div class="champs" id="form-com"><div style="grid-column:1/-1"><label for="com-texte">Commentaire</label><textarea id="com-texte"></textarea></div>'+
+      (o.demandes&&o.demandes.length?'<div><label for="com-demande">Demande concernée</label><select id="com-demande"><option value="">Projet en général</option>'+o.demandes.map(d=>'<option value="'+esc(d.id)+'"'+(d.id===o.demande?' selected':'')+'>'+esc(d.id)+' · '+esc(F(d.filiere).court)+'</option>').join("")+'</select></div>':'')+
+      '<label class="chk"><input type="checkbox" id="com-verif"'+(o.verif?' checked':'')+'> À faire vérifier (apparaît dans « À vérifier »)</label></div><div class="actions"><button class="primaire" data-action="creer-com" data-projet="'+esc(o.projet)+'" data-demande="'+esc(o.demande||"")+'">Publier</button><span class="etat">Signé '+esc(lireMoi()||"interne")+'. Pour un champ précis de la fiche, utilisez le ⚑ à côté du champ.</span></div></details>'; }
+  function ressourcesHtml(list, etapeCourante){
+    if(!list.length) return '<p class="pieces">Aucun document ni lien pour cette étape. <a href="#/documents">En ajouter</a>.</p>';
+    return list.map(r=>'<div class="res'+(r.etape&&r.etape===etapeCourante?' cur':'')+'"><div><div class="l">'+(r.url?'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.libelle)+' ↗</a>':esc(r.libelle))+'</div>'+(r.notes?'<div class="n">'+esc(r.notes)+'</div>':'')+
+      '<div class="m">'+esc((REF.types_ressource||{})[r.type]||r.type)+(r.filiere==="commun"?' · toutes filières':'')+(r.etape?' · étape '+esc(etapeLib(r.filiere,r.etape)):' · toutes étapes')+(r.verifie_le?' · lien vérifié le '+fmt(r.verifie_le):' · lien non vérifié')+'</div></div>'+
+      '<div class="bt">'+(r.fichier?'<a class="btn" style="padding:3px 8px;font-size:11px" href="/api/ressources/'+r.id+'/fichier">'+esc(r.nom_fichier||"fichier")+'</a>':'')+'</div></div>').join(""); }
+  function etapeLib(f,e){ if(!e) return "toutes"; const ff=REF.filieres[f]; if(!ff) return e; const x=ff.etapes.find(z=>z.cle===e); return x?x.libelle:(REF.hors_chaine[e]||e); }
+  const ROBOT_ST={en_attente:["warn","en attente de l'agent"],en_cours:["info","en cours"],terminee:["ok","terminé"],erreur:["crit","arrêté"],annulee:["neutre","annulé"]};
+  function lancementHtml(d, pl){
+    const va=(d.validation||{}).etat, ok=!REF.validation||!REF.validation.requise||va==="validee";
+    return '<div class="actions" style="padding-top:14px"><button data-action="robot" data-id="'+esc(d.id)+'" data-mode="banc">Banc d\'essai</button>'+
+      '<button data-action="robot" data-id="'+esc(d.id)+'" data-mode="portail" data-jusqua="2" title="Vrai portail, étapes 1 et 2, pour tester sans validation">Portail, étapes 1 et 2</button>'+
+      '<button class="primaire" data-action="robot" data-id="'+esc(d.id)+'" data-mode="portail" data-jusqua="5"'+(ok&&pl.pret?'':' disabled')+' title="'+(ok?(pl.pret?'Remplit les 4 étapes et s\'arrête avant la certification':'Formulaire incomplet'):'Validation du responsable nécessaire')+'">Pré-remplir le portail RTE</button></div>'; }
+  function lancementEnedisHtml(d, pl){
+    const va=(d.validation||{}).etat, ok=!REF.validation||!REF.validation.requise||va==="validee";
+    return '<div class="actions" style="padding-top:14px"><button data-action="robot" data-id="'+esc(d.id)+'" data-mode="portail" data-jusqua="1" title="Vrai portail, étape Coordonnées seulement ; le portail garde un brouillon">Portail, étape 1</button>'+
+      '<button class="primaire" data-action="robot" data-id="'+esc(d.id)+'" data-mode="portail" data-jusqua="4"'+(ok&&pl.pret?'':' disabled')+' title="'+(ok?(pl.pret?'Remplit les 4 étapes et s\'arrête sur Échéance, sans envoyer':'Formulaire incomplet'):'Validation du responsable nécessaire')+'">Pré-remplir le portail Enedis</button></div>'; }
+  function planEnedisHtml(pl){
+    let h='<div class="backend">'+(pl.pret?'<span class="pill ok">prête pour le robot</span> Toutes les valeurs obligatoires sont là.':'<span class="pill crit">incomplète</span> Manque : '+esc(pl.manquants.join(" ; ")))+(pl.alertes.length?'<br><span class="pill warn">attention</span> '+esc(pl.alertes.join(" ; ")):'')+'</div>';
+    if(!pl.etapes.length) return h;
+    const n=pl.etapes.reduce((k,e)=>k+e.actions.length,0);
+    h+='<details class="ajout"><summary>Voir les '+n+' saisies prévues sur le portail Enedis</summary><div class="d1 tbl-scroll"><table><tbody>'+
+      '<tr class="et"><td colspan="2">Accueil · commune et type</td></tr><tr><td class="q">Commune des travaux</td><td class="v">'+esc((pl.accueil.commune||"MANQUANT")+(pl.accueil.code_postal?" ("+pl.accueil.code_postal+")":""))+'</td></tr><tr><td class="q">Type de raccordement</td><td class="v">'+esc(pl.accueil.type)+'</td></tr>'+
+      pl.etapes.map(e=>'<tr class="et"><td colspan="2">Étape '+e.numero+' · '+esc(e.titre)+'</td></tr>'+e.actions.map(a=>'<tr class="'+(a.manque?"manque":"")+'"><td class="q">'+esc(a.question)+(a.note?'<div class="lieu">'+esc(a.note)+'</div>':'')+'</td><td class="v">'+(a.valeur==null||a.valeur===""?(a.requis?"MANQUANT":"vide"):esc(a.libelle||(a.valeur===true?"cochée":a.valeur)))+'</td></tr>').join("")+(e.arret?'<tr><td colspan="2" class="q">'+esc(e.arret)+'</td></tr>':'')).join("")+'</tbody></table></div></details>';
+    return h; }
+  function tachesRobotHtml(rt){
+    const ag=(rt.agents||[]).find(a=>a.en_ligne);
+    let h='<div class="backend" style="padding-top:0">'+(ag?'<span class="pill ok">agent en ligne</span> « '+esc(ag.nom)+' », vu il y a '+ag.secondes+' s. Le robot s\'ouvre dans Chrome sur ce poste.':
+      '<span class="pill crit">agent hors ligne</span> Lancer <code>2026_10_28_amont_agent_poste.bat</code> sur le poste'+((rt.agents||[]).length?' (dernier contact : '+esc(rt.agents[0].nom)+', '+esc((rt.agents[0].vu_le||"").slice(0,16))+')':'')+'. Les tâches attendent qu\'il se connecte.')+'</div>';
+    if(!(rt.taches||[]).length) return h;
+    return h+'<ul class="fil-ech">'+rt.taches.slice(0,4).map((t,k)=>{ const st=ROBOT_ST[t.statut]||["neutre",t.statut]; const actif=t.statut==="en_attente"||t.statut==="en_cours";
+      return '<li><div class="dt">'+fmt(t.demandee_le)+'<small>'+esc((t.demandee_le||"").slice(11,16))+'</small></div><div><div class="ob"><span class="pill '+st[0]+'">'+st[1]+'</span> '+esc(t.mode==="banc"?"banc d'essai":(t.robot==="enedis"?"portail Enedis":"portail RTE"))+(t.jusqua<(t.robot==="enedis"?4:5)?', jusqu\'à l\'étape '+t.jusqua:'')+'</div>'+
+        '<div class="mt">par '+esc(t.demandee_par||"")+(t.agent?' · poste '+esc(t.agent):'')+(t.resultat?' · '+esc(t.resultat):'')+'</div>'+
+        (t.journal?'<details'+(actif||k===0&&t.statut==="erreur"?' open':'')+'><summary class="etat" style="cursor:pointer">journal du robot</summary><pre class="journal-robot">'+esc(t.journal.split("\n").slice(-60).join("\n"))+'</pre></details>':'')+'</div>'+
+        '<div class="bt">'+(t.statut==="en_attente"?'<button data-action="robot-annuler" data-tache="'+t.id+'">Annuler</button>':'')+'</div></li>'; }).join("")+'</ul>'; }
+  async function majRobot(id){ const z=$("#robot-taches"); if(!z||z.dataset.id!==id) return;
+    const rt=await api("/robot/taches?demande="+encodeURIComponent(id)).catch(()=>null); if(!rt) return;
+    const ouverts=[...z.querySelectorAll("details")].map(x=>x.open); z.innerHTML=tachesRobotHtml(rt);
+    const pre=z.querySelector("pre.journal-robot"); if(pre) pre.scrollTop=pre.scrollHeight;
+    if(rt.taches.some(t=>t.statut==="en_attente"||t.statut==="en_cours")) setTimeout(()=>majRobot(id),2500);
+    else if(ouverts.length && rt.taches[0] && ["terminee","erreur"].includes(rt.taches[0].statut)) route(true); }
+  const keur=v=>v==null?"—":(v>=1000?(v/1000).toLocaleString("fr-FR",{maximumFractionDigits:2})+" M€":nb(v)+" k€");
+  function etudeHtml(d){
+    let h='<div class="bloc"><div class="bloc-head"><h2>Étude exploratoire reçue</h2>'+((d.analyses||[]).length?'<span class="etat">'+d.analyses.length+' lecture'+(d.analyses.length>1?"s":"")+'</span>':'')+'</div>';
+    (d.analyses||[]).slice(0,2).forEach(a=>{ const x=a.donnees;
+      h+='<div class="backend"><b>Étude n° '+esc(x.num_etude||"?")+'</b> du '+fmt(x.date_etude)+(x.date_demande?' (demande du '+fmt(x.date_demande)+')':'')+(x.puissance_mw?' · '+nb(x.puissance_mw)+' MW':'')+(x.domaine?' · '+esc(x.domaine):'')+(x.d_km!=null?' · d = '+String(x.d_km).replace(".",",")+' km'+(x.poste_reference?' ('+esc(x.poste_reference)+')':''):'')+
+        (a.nom_fichier?' · <span class="etat">'+esc(a.nom_fichier)+'</span>':'')+(x.methode==="ia"?' · <span class="pill warn">lu par IA</span>':'')+'</div>';
+      h+='<ul class="fil-ech">'+x.solutions.map(s=>'<li style="grid-template-columns:1fr auto"><div><div class="ob">'+s.numero+'. '+esc(s.titre)+(s.puissance_mw?' <span class="etat">('+s.puissance_mw+' MW)</span>':'')+'</div>'+
+          '<div class="mt kv" style="margin-top:4px">'+(s.tension_kv?s.tension_kv+' kV · ':'')+'coût '+keur(s.cout_total_keur)+' · part client <b>'+keur(s.cout_client_keur)+'</b> · '+(s.delai_mois?s.delai_mois+' mois':'délai ?')+'</div></div><div class="bt">'+
+          (a.solution_reportee===s.numero?'<span class="pill ok">reportée</span>':'<button data-action="reporter" data-analyse="'+a.id+'" data-solution="'+s.numero+'">Reporter</button>')+'</div></li>').join("")+'</ul>'+
+        (a.reportee_le?'<p class="pieces">Reportée par '+esc(a.reportee_par)+' le '+fmt(a.reportee_le)+'.</p>':'<p class="pieces">« Reporter » recopie le numéro, la date, la distance et la solution choisie dans la demande, la passe à « étude reçue » et crée un point à vérifier.</p>'); });
+    h+='<div class="depot" id="depot-etude" data-id="'+esc(d.id)+'">Déposez ici l\'étude exploratoire reçue de RTE (PDF) : elle est jointe à la demande et lue.<input type="file" id="fichier-etude" accept=".pdf" hidden></div>';
+    const nonlues=(d.pieces||[]).filter(p=>p.type==="etude_recue"&&!(d.analyses||[]).some(a=>a.piece_id===p.id));
+    if(nonlues.length) h+='<div class="actions">'+nonlues.map(p=>'<button data-action="lire-piece" data-piece="'+p.id+'">Lire '+esc(p.nom_fichier.slice(0,40))+'</button>').join("")+'</div>';
+    return h+'</div>'; }
+  function d2Html(d, a, m){
+    let h='<div class="bloc" id="d2"><div class="bloc-head"><h2>Fiche D2 et courriel à RTE</h2><span class="etat">'+(a.num_etude?'suite de l\'étude n° '+esc(a.num_etude):'sans étude exploratoire repérée')+'</span></div>';
+    h+='<div class="backend">'+(a.manquants.length?'<span class="pill crit">'+a.manquants.length+' case'+(a.manquants.length>1?"s":"")+' vide'+(a.manquants.length>1?"s":"")+'</span> '+esc(a.manquants.join(" ; "))+'. Elles sortiront « à compléter » en jaune : complétez plutôt la <a href="#/site/'+esc(d.projet_code)+'">fiche du site</a> (groupe Demandeur et Électricité).':'<span class="pill ok">D2 complète</span> Toutes les cases obligatoires sont remplies depuis la fiche du site.')+'</div>';
+    if(a.elements_complementaires.length) h+='<details class="ajout"><summary>Section VI, éléments complémentaires prévus</summary><pre class="journal-robot" style="white-space:pre-wrap">'+esc(a.elements_complementaires.join("\n"))+'</pre></details>';
+    h+='<div class="actions"><button class="primaire" data-action="generer-d2" data-id="'+esc(d.id)+'">'+(a.pieces_d2.length?'Régénérer la D2':'Générer la D2')+'</button>'+
+      a.pieces_d2.slice(-2).map(p=>'<a class="btn" href="/api/pieces/'+p.id+'/fichier">'+esc(p.nom_fichier)+'</a>').join("")+'<span class="etat">relire, dater, signer, puis déposer le PDF signé dans les pièces (type fiche d2)</span></div>';
+    if(m){
+      h+='<div class="sep" style="padding:12px 16px 4px">Courriel d\'envoi</div>';
+      if(m.alertes.length) h+='<div class="alertes">'+m.alertes.map(x=>'<div class="al warn"><span>'+esc(x)+'</span></div>').join("")+'</div>';
+      h+='<div class="backend"><b>À :</b> '+esc(m.a.join(", "))+(m.cc.length?'<br><b>Cc :</b> '+esc(m.cc.join(", ")):'')+'<br><b>Objet :</b> '+esc(m.objet)+'<br><b>Pièces :</b> '+(m.pieces.length?m.pieces.map(p=>esc(p.nom_fichier)).join(", ")+' ('+taille(m.taille_octets)+')':'aucune')+'</div>';
+      h+='<details class="ajout"><summary>Texte du courriel</summary><pre class="journal-robot" style="white-space:pre-wrap">'+esc(m.corps)+'</pre></details>';
+      h+='<div class="actions"><a class="btn primaire" href="/api/demandes/'+encodeURIComponent(d.id)+'/courriel.eml" download>Télécharger le courriel (.eml)</a><button data-action="copier" data-texte="'+esc(m.corps)+'">Copier le texte</button>'+
+        '<span class="etat">Le .eml s\'ouvre dans Outlook comme un nouveau message, pièces jointes comprises : relire, puis « Envoyer » vous-même. Ensuite, déposez le message envoyé dans les échanges et passez la demande à « déposé ».</span></div>';
+    }
+    return h+'</div>'; }
+  function ptfHtml(d){
+    let h='<div class="bloc"><div class="bloc-head"><h2>PTF reçue</h2>'+((d.analyses||[]).length?'<span class="etat">'+d.analyses.length+' lecture'+(d.analyses.length>1?"s":"")+'</span>':'')+'</div>';
+    (d.analyses||[]).filter(a=>a.type==="ptf_rte").slice(0,2).forEach(a=>{ const x=a.donnees;
+      h+='<div class="backend"><b>PTF n° '+esc(x.num_ptf||"?")+'</b>'+(x.client?' · '+esc(x.client):'')+(x.date_demande?' · demande du '+fmt(x.date_demande):'')+(x.puissance_mw?' · '+nb(x.puissance_mw)+' MW':'')+(a.nom_fichier?' · <span class="etat">'+esc(a.nom_fichier)+'</span>':'')+(x.methode!=="regles"?' · <span class="pill warn">complétée par IA</span>':'')+'</div>';
+      h+='<ul class="fil-ech"><li style="grid-template-columns:1fr auto"><div><div class="ob">'+esc(x.poste||"Poste ?")+(x.tension_kv?' · raccordement en '+x.tension_kv+' kV':'')+(x.domaine_reference?' <span class="etat">(référence '+esc(x.domaine_reference)+')</span>':'')+'</div>'+
+        '<div class="mt kv" style="margin-top:4px">contribution client <b>'+keur(x.cout_client_keur)+'</b> HT · acompte '+keur(x.acompte_keur)+' · délai <b>'+(x.delai_mois?x.delai_mois+' mois':'?')+'</b>'+(x.delai_reduit_mois?' (réductible à '+x.delai_reduit_mois+')':'')+(x.limitations?' · limitations '+esc(x.limitations):'')+' · validité '+(x.validite_mois||3)+' mois</div>'+
+        (x.solution?'<details><summary class="etat" style="cursor:pointer">solution proposée</summary><p class="pieces">'+esc(x.solution)+'</p></details>':'')+'</div><div class="bt">'+
+        (a.reportee_le?'<span class="pill ok">reportée</span>':'<button data-action="reporter" data-analyse="'+a.id+'" data-solution="1">Reporter</button>')+'</div></li></ul>'+
+        (a.reportee_le?'<p class="pieces">Reportée par '+esc(a.reportee_par)+' le '+fmt(a.reportee_le)+'.</p>':'<p class="pieces">« Reporter » recopie numéro, contribution, acompte, délais et poste dans la demande, la passe à « PTF reçue » (l\'échéance de validité se calcule) et crée un point à vérifier.</p>'); });
+    h+='<div class="depot" id="depot-etude" data-id="'+esc(d.id)+'">Déposez ici la PTF reçue de RTE (PDF des conditions particulières) : elle est jointe à la demande et lue.<input type="file" id="fichier-etude" accept=".pdf" hidden></div>';
+    const nonlues=(d.pieces||[]).filter(p=>p.type==="ptf"&&!(d.analyses||[]).some(a=>a.piece_id===p.id));
+    if(nonlues.length) h+='<div class="actions">'+nonlues.map(p=>'<button data-action="lire-piece" data-piece="'+p.id+'">Lire '+esc(p.nom_fichier.slice(0,40))+'</button>').join("")+'</div>';
+    return h+'</div>'; }
+  async function deposerEtude(id, f){ const fd=new FormData(); fd.append("fichier",f); toast("Lecture de l'étude…");
+    try{ const r=await fetch("/api/demandes/"+encodeURIComponent(id)+"/reponse",{method:"POST",body:fd,headers:entetes(false)}); const j=await r.json(); if(!r.ok) throw new Error(j.erreur||("erreur "+r.status));
+      toast(j.analyse?(j.analyse.type==="ptf_rte"?"PTF n° "+(j.analyse.donnees.num_ptf||"?")+" lue.":"Étude n° "+(j.analyse.donnees.num_etude||"?")+" lue : "+j.analyse.donnees.solutions.length+" solution(s)."):"Document joint, mais pas lu : "+j.erreur); route(true); }
+    catch(e){ toast(e.message); } }
+  function d1Html(pl, id){
+    const cmd='python 2026_10_26_amont_robot_d1.py --demande '+id;
+    let h='<div class="backend">'+(pl.pret?'<span class="pill ok">prête pour le robot</span> Toutes les valeurs obligatoires sont là.':'<span class="pill crit">incomplète</span> Manque : '+esc(pl.manquants.join(" ; ")))+(pl.alertes.length?'<br><span class="pill warn">attention</span> '+esc(pl.alertes.join(" ; ")):'')+'</div>';
+    h+='<div class="cmd"><code>'+esc(cmd)+' --simulation</code><button data-action="copier" data-texte="'+esc(cmd)+' --simulation">Copier</button></div><div class="cmd"><code>'+esc(cmd)+' --pause</code><button data-action="copier" data-texte="'+esc(cmd)+' --pause">Copier</button></div>';
+    h+='<details class="ajout"><summary>Voir les '+pl.etapes.reduce((n,e)=>n+e.actions.length,0)+' saisies prévues dans le portail</summary><div class="d1 tbl-scroll"><table><tbody>'+pl.etapes.map(e=>'<tr class="et"><td colspan="2">Étape '+e.numero+' · '+esc(e.titre)+'</td></tr>'+(e.actions.length?e.actions.map(a=>'<tr class="'+(a.manque?"manque":"")+'"><td class="q">'+esc(a.question)+(a.note?'<div class="lieu">'+esc(a.note)+'</div>':'')+'</td><td class="v">'+(a.valeur==null||a.valeur===""?(a.requis?"MANQUANT":"vide"):esc(a.valeur))+'</td></tr>').join(""):'<tr><td colspan="2" class="q">'+esc(e.arret||"")+'</td></tr>')).join("")+'</tbody></table></div></details>';
+    return h; }
+  function formEchange(o){ /* o : projet, demande, contacts, projets (liste pour choisir), demandes */
+    const auj=new Date().toISOString().slice(0,10);
+    let h='<details class="ajout"'+(o.ouvert?' open':'')+'><summary>+ Ajouter un échange (saisie, ou dépôt de .eml)</summary><div class="champs" id="form-ech">';
+    if(!o.projet){ h+='<div><label for="e-projet">Projet</label><select id="e-projet" data-e="projet_code"><option value="">Choisir…</option>'+o.projets.map(p=>'<option value="'+esc(p.code)+'">'+esc(p.nom)+'</option>').join("")+'</select></div>'; }
+    if(!o.demande){ const ds=(o.demandes||[]); h+='<div><label for="e-demande">Demande</label><select id="e-demande" data-e="demande_id"><option value="">Projet seul</option>'+ds.map(d=>'<option value="'+esc(d.id)+'">'+esc(d.id)+' · '+esc(F(d.filiere).court)+'</option>').join("")+'</select></div>'; }
+    h+='<div><label for="e-sens">Sens</label><select id="e-sens" data-e="sens">'+Object.entries(REF.sens_echange).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join("")+'</select></div>';
+    h+='<div><label for="e-canal">Canal</label><select id="e-canal" data-e="canal">'+Object.entries(REF.canaux_echange).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join("")+'</select></div>';
+    h+='<div><label for="e-date">Date</label><input id="e-date" type="date" data-e="date" value="'+auj+'"></div>';
+    h+='<div><label for="e-contact">Contact</label><select id="e-contact" data-e="contact_id"><option value="">—</option>'+(o.contacts||[]).map(c=>'<option value="'+c.id+'">'+esc(c.nom)+(c.organisation?' ('+esc(c.organisation)+')':'')+'</option>').join("")+'</select></div>';
+    h+='<div style="grid-column:1/-1"><label for="e-objet">Objet</label><input id="e-objet" data-e="objet"></div>';
+    h+='<div style="grid-column:1/-1"><label for="e-resume">Résumé ou contenu</label><textarea id="e-resume" data-e="resume"></textarea></div>';
+    h+='<div><label for="e-relance">Relancer le</label><input id="e-relance" type="date" data-e="relance_le"></div><label class="chk"><input type="checkbox" id="e-attend" data-e="attend_reponse" checked> J\'attends une réponse (envoi)</label>';
+    h+='</div><div class="actions"><button class="primaire" data-action="creer-echange" data-projet="'+esc(o.projet||"")+'" data-demande="'+esc(o.demande||"")+'">Enregistrer l\'échange</button><span class="etat">Un échange reçu clôt les attentes de réponse ouvertes sur la même demande.</span></div>';
+    h+='<div class="depot" id="depot-eml" data-projet="'+esc(o.projet||"")+'" data-demande="'+esc(o.demande||"")+'">Ou déposez ici un ou plusieurs courriels <b>.eml</b> : expéditeur, date, objet et texte sont lus, le sens est deviné'+(o.demande?'':', la demande aussi quand l\'objet cite son code ou son n° d\'étude')+'.<input type="file" id="fichiers-eml" accept=".eml" multiple hidden></div></details>';
+    return h; }
+
+  /* ---------- pages ---------- */
+  async function pageAccueil(){
+    const [projets, alertes, sante] = await Promise.all([api("/projets"), api("/alertes"), api("/sante")]);
+    const noms={}; projets.forEach(p=>noms[p.code]=p.nom);
+    let mw=0; projets.forEach(p=>(p.par_filiere.rte_ee||[]).forEach(d=>mw+=Number(d.puissance_mw)||0));
+    const tot='<div class="totaux"><div class="tot"><div class="v mono">'+sante.projets+'</div><div class="k">projets</div></div><div class="tot"><div class="v mono">'+sante.demandes+'</div><div class="k">demandes</div></div><div class="tot"><div class="v mono">'+nb(mw)+'</div><div class="k">MW RTE cumulés</div></div><div class="tot"><div class="v mono">'+alertes.length+'</div><div class="k">à traiter</div></div><div class="tot"><div class="v mono">'+(sante.en_attente_reponse||0)+'</div><div class="k">sans réponse</div></div><div class="tot"><div class="v mono">'+(sante.a_verifier||0)+'</div><div class="k">à vérifier</div></div></div>';
+    let h=head("Tableau de bord","Une ligne par site : étape, prochaine action et échéance pour chaque opérateur, et dernier échange. Cliquez une case pour ouvrir la demande, ou pour en créer une.",tot);
+    h+= alertes.length ? '<div class="alertes">'+alertes.map(a=>'<div class="al '+a.severite+'"><code><a href="#/demande/'+esc(a.demande_id)+'" style="text-decoration:none">'+esc(a.demande_id)+'</a></code><span class="ftag '+a.filiere+'">'+F(a.filiere).court+'</span><span><b>'+esc(noms[a.projet]||a.projet)+'</b> · '+esc(a.texte)+'</span></div>').join("")+'</div>'
+      : '<div class="alertes"><div class="al"><span>Aucune échéance à moins de 14 jours et aucun dossier en attente de validation. Le courriel du matin ne partira pas aujourd\'hui.</span></div></div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Projets et filières</h2><div style="display:flex;gap:8px"><a class="btn" href="#/nouveau-projet">Nouveau projet</a><a class="btn" href="/api/export.xlsx">Exporter en Excel</a></div></div><div class="tbl-scroll"><table class="matrice"><thead><tr><th>Projet</th>'+REF.ordre_filieres.map(f=>'<th class="fil">'+esc(F(f).libelle)+'</th>').join("")+'<th>Dernier échange</th></tr></thead><tbody>';
+    if(!projets.length) h+='<tr><td colspan="'+(REF.ordre_filieres.length+2)+'" class="etat" style="padding:30px;text-align:center">Aucun projet. Créez le premier, ou lancez le script d\'import.</td></tr>';
+    projets.forEach(p=>{
+      h+='<tr><td><div class="projname"><a href="#/projet/'+p.code+'" style="text-decoration:none">'+esc(p.nom)+'</a></div><div class="projmeta">'+esc(p.commune||"")+(p.puissance_cible_mw?' · '+nb(p.puissance_cible_mw)+' MW visés':'')+'</div>'+(p.a_verifier?'<a class="ptchip" href="#/projet/'+esc(p.code)+'">⚑ '+p.a_verifier+' à vérifier</a>':'')+'</td>';
+      REF.ordre_filieres.forEach(f=>{ const ds=p.par_filiere[f]||[]; const so=(p.filieres_etat||{})[f];
+        if(so && !ds.length){ h+='<td class="cell"><span class="cellbtn so" title="'+esc(so.motif||"")+'">sans objet'+(so.motif?'<span class="e">'+esc(court(so.motif,28))+'</span>':'')+'</span><a href="#" class="cellsub" data-action="a-suivre" data-code="'+esc(p.code)+'" data-filiere="'+f+'">remettre à suivre</a></td>'; return; }
+        if(!ds.length){ h+='<td class="cell"><a class="cellbtn vide" href="#/nouvelle/'+p.code+'/'+f+'">+ créer</a><a href="#" class="cellsub" data-action="sans-objet" data-code="'+esc(p.code)+'" data-filiere="'+f+'">sans objet</a></td>'; return; }
+        h+='<td class="cell"><div style="display:flex;flex-direction:column;gap:4px;align-items:center">'+ds.map(cellule).join("")+'</div></td>'; });
+      h+='<td class="ech-col">'+echCol(p.echanges_resume)+'</td></tr>'; });
+    h+='</tbody></table></div></div>';
+    h+='<p class="note"><b>Le dernier clic reste humain, sur toutes les filières.</b> Les robots pré-remplissent les portails et s\'arrêtent sur l\'écran de relecture ; la fiche D2 et la confirmation de solution RTE partent par courriel, préparé par l\'outil et envoyé par vous. Un robot peut passer une demande à « prêt pour validation », jamais à « déposé ».</p>';
+    return h;
+  }
+  async function pageProjets(){
+    const projets=await api("/projets");
+    let h=head("Projets","Un projet porte jusqu'à quatre demandes, une par filière, plus une demande Enedis de chantier le cas échéant.");
+    h+='<div class="bloc"><div class="bloc-head"><h2>'+projets.length+' projets</h2><a class="btn" href="#/nouveau-projet">Nouveau projet</a></div><div class="tbl-scroll"><table><thead><tr><th>Code</th><th>Projet</th><th>Commune</th><th class="num">Puissance visée</th><th>Demandes</th><th>Prochaine échéance du projet</th></tr></thead><tbody>';
+    projets.forEach(p=>{ const ds=[].concat(...Object.values(p.par_filiere)); const pes=ds.map(d=>d.prochaine_echeance).filter(Boolean).sort((a,b)=>a.date.localeCompare(b.date));
+      h+='<tr class="lien" data-href="#/projet/'+p.code+'"><td><span class="ref">'+p.code+'</span></td><td class="projname">'+esc(p.nom)+'</td><td>'+esc(p.commune||"")+(p.departement?' · '+p.departement:'')+'</td><td class="num kv">'+(p.puissance_cible_mw?nb(p.puissance_cible_mw)+' MW':'—')+'</td><td>'+ds.map(d=>'<span class="ftag '+d.filiere+'">'+F(d.filiere).court+'</span>').join(" ")+'</td><td>'+echHtml(pes[0])+'</td></tr>'; });
+    return h+'</tbody></table></div></div>';
+  }
+  async function pageProjet(code){
+    const [p, ech, contacts, coms]=await Promise.all([api("/projets/"+encodeURIComponent(code)), api("/echanges?projet="+encodeURIComponent(code)), api("/contacts"), api("/commentaires?projet="+encodeURIComponent(code))]);
+    let h=crumbs([{l:"Tableau de bord",href:"#/"},{l:"Projets",href:"#/projets"},{l:p.nom}]);
+    h+=head(esc(p.nom),esc(p.commune||"")+(p.departement?' ('+p.departement+')':'')+(p.puissance_cible_mw?' · '+nb(p.puissance_cible_mw)+' MW visés':'')+' · '+esc(p.notes||"Pas de note de projet."),'<div style="display:flex;gap:14px;align-items:flex-end"><a class="btn" href="#/site/'+esc(p.code)+'">Fiche identité et sources</a><div class="totaux"><div class="tot"><div class="v mono">'+p.demandes.length+'</div><div class="k">demandes</div></div></div></div>');
+    h+='<div class="synth">'+REF.ordre_filieres.map(f=>{ const ds=p.par_filiere[f]||[]; const ff=F(f);
+      const so=(p.filieres_etat||{})[f];
+      if(so && !ds.length) return '<a href="#" data-action="a-suivre" data-code="'+esc(p.code)+'" data-filiere="'+f+'" title="Cliquer pour remettre à suivre"><div class="t"><span class="ftag '+f+'">'+ff.court+'</span></div><div class="vide">Sans objet'+(so.motif?' : '+esc(so.motif):'')+'</div></a>';
+      if(!ds.length) return '<a href="#/nouvelle/'+p.code+'/'+f+'"><div class="t"><span class="ftag '+f+'">'+ff.court+'</span></div><div class="vide">Aucune demande. Créer.</div></a>';
+      return ds.map(d=>{ const pe=d.prochaine_echeance; const s=pe?(pe.jours<0?"crit":(pe.jours<=14?"warn":"")):""; const a=d.action||{};
+        return '<a href="#/demande/'+esc(d.id)+'"><div class="t"><span class="ftag '+f+'">'+ff.court+'</span><span class="code">'+esc(d.num_etude||d.id)+'</span></div><span class="pill '+classePill(d.statut)+'">'+esc(d.libelle_statut)+'</span><div class="next '+(a.niveau==="crit"||a.niveau==="warn"?a.niveau:"")+'" style="color:'+(a.niveau==="crit"||a.niveau==="warn"?"":"var(--ink)")+'">→ '+esc(a.texte||"")+'</div><div class="next '+s+'">'+(pe?fmt(pe.date)+' · '+esc(pe.libelle.split(",")[0])+(pe.jours<0?' (dépassée)':' (J-'+pe.jours+')'):esc(d.dimension||""))+'</div></a>'; }).join(""); }).join("")+'</div>';
+    h+='<div class="grid2"><div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Échéancier du projet, toutes filières</h2><span class="etat">'+p.echeancier.filter(e=>!e.fait).length+' à venir</span></div>'+(p.echeancier.length?'<ul class="jal">'+p.echeancier.map(e=>'<li class="'+(e.fait?"fait":"")+'"><span class="dt">'+fmt(e.date)+'</span><span class="ftag '+e.filiere+'">'+F(e.filiere).court+'</span><span class="tx">'+esc(e.libelle)+'</span></li>').join("")+'</ul>':'<p class="pieces">Aucune échéance : aucune demande de ce projet n\'a encore de date de dépôt.</p>')+'</div>';
+    const nOuv=coms.filter(c=>c.a_verifier&&c.statut==="ouvert").length;
+    h+='<div class="bloc" id="commentaires"><div class="bloc-head"><h2>Commentaires et points à vérifier</h2><span class="etat">'+(nOuv?'<b style="color:var(--accent)">'+nOuv+' point'+(nOuv>1?"s":"")+' à vérifier</b> · ':'')+coms.length+' message'+(coms.length>1?"s":"")+'</span></div>'+commentairesHtml(coms)+formCommentaire({projet:p.code, demandes:p.demandes, ouvert:!coms.length})+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Échanges du projet</h2><span class="etat">'+ech.length+' échange'+(ech.length>1?"s":"")+'</span></div>'+echangesHtml(ech,{avecDemande:true})+formEchange({projet:p.code, contacts:contacts, demandes:p.demandes})+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Journal du projet</h2><a href="#/journal" class="etat">Journal complet</a></div><div class="tbl-scroll"><table class="journal"><tbody>'+journalRows(p.journal,true)+'</tbody></table></div></div>';
+    h+='</div><div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Pièces du projet</h2><span class="etat">raccordement/'+esc(p.code)+'/</span></div>'+(p.pieces.length?p.pieces.map(x=>'<div class="fichier"><div class="ic"></div><div class="n"><div><a href="/api/pieces/'+x.id+'/fichier">'+esc(x.nom_fichier)+'</a></div><div class="lieu">'+esc(x.type)+' · <span class="ftag '+x.filiere+'">'+F(x.filiere).court+'</span></div></div><div class="m">'+taille(x.taille_octets)+' · '+fmt(x.ajoute_le)+'</div></div>').join(""):'<p class="pieces">Aucune pièce. Le dépôt se fait depuis la fiche de chaque demande.</p>')+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Fiche projet</h2></div><div class="champs">'+champ("nom","Nom",p.nom)+champ("commune","Commune",p.commune)+champ("departement","Département",p.departement)+champ("puissance_cible_mw","Puissance visée MW",p.puissance_cible_mw,"number")+champ("lat","Latitude",p.lat,"number")+champ("lon","Longitude",p.lon,"number")+'<div style="grid-column:1/-1"><label for="f-notes">Notes</label><textarea id="f-notes" data-k="notes">'+esc(p.notes||"")+'</textarea></div></div><div class="actions"><button class="primaire" data-action="sauver-projet" data-code="'+esc(p.code)+'">Enregistrer</button><span class="etat" id="msg"></span></div></div>';
+    h+='</div></div>';
+    return h;
+  }
+  const taille=o=>o==null?"":(o>1048576?(o/1048576).toFixed(1).replace(".",",")+" Mo":Math.round(o/1024)+" ko");
+  function champ(k,l,v,t){ return '<div><label for="f-'+k+'">'+esc(l)+'</label><input id="f-'+k+'" data-k="'+k+'" type="'+(t||"text")+'"'+(t==="number"?' step="any"':'')+' value="'+esc(v==null?"":v)+'"></div>'; }
+  function selectChamp(k,l,v,opts){ return '<div><label for="f-'+k+'">'+esc(l)+'</label><select id="f-'+k+'" data-k="'+k+'">'+opts.map(o=>'<option value="'+esc(o[0])+'"'+(String(v)===String(o[0])?" selected":"")+'>'+esc(o[1])+'</option>').join("")+'</select></div>'; }
+  const boolChamp=(k,l,v)=>selectChamp(k,l,v?"oui":"non",[["non","Non"],["oui","Oui"]]).replace('data-k="'+k+'"','data-k="'+k+'" data-t="bool"');
+  const LIB={puissance_mw:["Puissance MW","number"],hypothese_secondaire_mw:["Hypothèse 2 MW","number"],d_km:["Distance d, km","number"],num_etude:["N° étude RTE"],date_recevabilite:["Recevabilité","date"],date_etude_recue:["Étude reçue","date"],date_relance:["Relance faite","date"],date_confirmation_demandee:["Confirmation demandée","date"],date_confirmation_recue:["Confirmation reçue","date"],solution:["Solution retenue"],cout_total_keur:["Coût total k€","number"],cout_client_keur:["Coût client k€","number"],delai_mois:["Délai mois","number"],
+    ref_etude_exploratoire:["Réf. étude explo"],gps_lat:["GPS latitude","number"],gps_lon:["GPS longitude","number"],alimentations_supplementaires:["Alim. HTB suppl.","number"],date_virement:["Virement 42 k€","date"],date_ptf_recue:["PTF reçue","date"],prorogation_ptf:["Prorogation demandée","bool"],date_ptf_acceptee:["PTF acceptée","date"],date_convention_signee:["Convention signée","date"],nb_versements_forfaitaires:["Versements 1 k€/MW faits","number"],date_signature_fasttrack:["Signature fast-track","date"],date_permis_obtenu:["Permis obtenu","date"],num_ptf:["N° PTF"],poste_raccordement:["Poste de raccordement"],tension_raccordement_kv:["Tension raccordement kV","number"],acompte_keur:["Acompte k€","number"],delai_reduit_mois:["Délai réduit, mois","number"],limitations_temporaires:["Limitations temporaires"],
+    type_enedis:["Type","choix",[["hta","Site industriel HTA"],["chantier","Site industriel HTA + branchement provisoire de chantier"]]],puissance_kva:["Puissance kVA","number"],complexite:["Instruction","choix",[["simple","Simple, 1 mois"],["etude","Avec étude, 3 mois"]]],ouvrages_rte:["Ouvrages RTE","bool"],ref_dossier:["N° dossier"],date_qualification:["Qualification","date"],date_pdr_recue:["PDR reçue","date"],date_pdr_acceptee:["PDR acceptée","date"],date_mise_en_service:["Mise en service","date"],
+    debit_nm3h:["Débit Nm³/h","number"],usage_gaz:["Usage du gaz"],etude_requise:["Étude requise","bool"],date_devis_recu:["Devis reçu","date"],date_devis_accepte:["Devis accepté","date"],date_travaux_prevue:["Travaux prévus","date"],
+    debit_min_nm3h:["Débit min Nm³/h","number"],pression_bar:["Pression bar","number"],date_rapport_prevu:["Rapport faisabilité prévu","date"],date_rapport_recu:["Rapport reçu","date"],date_convention_etudes:["Convention d'études signée","date"],date_offre_recue:["Réponse / offre reçue","date"],date_contrat_signe:["Contrat signé","date"],cout_etudes_keur:["Coût études k€","number"]};
+  const PT={rte_ee:"<b>Extrait cadastral</b> du point de raccordement, bloquant sous 8 jours ouvrés. Plan de situation et d'implantation du poste HTB. Schéma unifilaire. Note de contexte. Mandat le cas échéant.",rte_ptf:"<b>Fiche D2</b> complète et signée (générée par Amont depuis la fiche du site), GPS du point de connexion, unifilaire. Fiche D1 si étude antérieure. <b>Preuve de virement</b> de la somme forfaitaire, TVA intracommunautaire, adresse de facturation. Envoi par courriel uniquement.",enedis:"Procédure en ligne sur le <b>Portail Raccordement Entreprise</b> (raccordement-entreprise-enedis.fr), parcours « Un site industriel en HTA » : <b>extrait cadastral</b> et <b>plan de masse</b> avec l'emplacement du poste de livraison (obligatoires), plan de situation et photo facultatifs. Sans <b>permis de construire</b>, demande « anticipée », payante. CONSUEL avant mise en service.",natran:"Débits nominal, maximal et minimal, <b>pression de livraison</b>, date de mise en service, type d'installation, adresse et plans, <b>propriété du terrain et statut PLU</b>. Pas de portail : demande à l'interlocuteur commercial, puis convention d'études de faisabilité payante.",grdf:"<b>Adresse du bâtiment</b>, débit, usage, plans. Qualigaz et numéro PCE à la mise en service."};
+
+  async function pageDemande(id){
+    const [d, ech, contacts, lp, coms]=await Promise.all([api("/demandes/"+encodeURIComponent(id)), api("/echanges?demande="+encodeURIComponent(id)), api("/contacts"), api("/projets"), api("/commentaires?demande="+encodeURIComponent(id))]);
+    const ptf=d.filiere==="rte_ptf";
+    const [res, pl, ad2, mel]=await Promise.all([api("/ressources?filiere="+d.filiere+"&etape="+encodeURIComponent(d.statut)), d.filiere==="rte_ee"?api("/demandes/"+encodeURIComponent(id)+"/d1"):Promise.resolve(null),
+      ptf?api("/demandes/"+encodeURIComponent(id)+"/d2").catch(()=>null):Promise.resolve(null), ptf?api("/demandes/"+encodeURIComponent(id)+"/courriel").catch(()=>null):Promise.resolve(null)]);
+    const ple=d.filiere==="enedis"?await api("/demandes/"+encodeURIComponent(id)+"/enedis").catch(()=>null):null;
+    const projets={}; lp.forEach(p=>projets[p.code]=p.nom);
+    const f=F(d.filiere);
+    let h=crumbs([{l:"Tableau de bord",href:"#/"},{l:projets[d.projet_code]||d.projet_code,href:"#/projet/"+d.projet_code},{l:d.id}]);
+    h+=head('<span class="ftag '+d.filiere+'" style="vertical-align:middle;font-size:12px">'+f.court+'</span>&nbsp; '+esc(d.id),esc(d.site||"")+' · '+esc(d.commune||"")+(d.departement?' ('+d.departement+')':'')+' · '+esc(f.libelle));
+    const ac=d.action||{};
+    h+='<div class="bloc"><div class="actbox '+(ac.niveau||"")+'"><span class="s">Prochaine action</span><span class="t">'+esc(ac.texte||"")+'</span><span class="s">'+({manuel:"saisie à la main",echeance:"échéance",echange:"suivi des échanges",etape:"selon l\'étape"}[ac.source]||"")+'</span></div></div>';
+    const va=d.validation||{};
+    if(va.requise && ["brouillon","pret_validation","irrecevable"].includes(d.statut) || (va.etat&&va.etat!=="aucune")){
+      const VE={aucune:["neutre","pas demandée"],demandee:["warn","en attente"],validee:["ok","validée"],perimee:["crit","périmée"],refusee:["crit","refusée"]}[va.etat]||["neutre",va.etat];
+      let t='';
+      if(va.etat==="demandee") t='Demandée par <b>'+esc(va.demande_par)+'</b> le '+fmt(va.demande_le)+(va.message?' : « '+esc(va.message)+' »':'')+'.';
+      else if(va.etat==="validee") t='Validée par <b>'+esc(va.traite_par)+'</b> le '+fmt(va.traite_le)+(va.commentaire?' : « '+esc(va.commentaire)+' »':'')+'. Le dossier n\'a pas changé depuis.';
+      else if(va.etat==="perimee") t='Validée par '+esc(va.traite_par)+' le '+fmt(va.traite_le)+', mais le dossier a changé depuis (fiche, champs ou pièces) : à revalider.';
+      else if(va.etat==="refusee") t='Refusée par <b>'+esc(va.traite_par)+'</b> le '+fmt(va.traite_le)+(va.commentaire?' : « '+esc(va.commentaire)+' »':'')+'.';
+      else t='Avant l\'envoi, '+(va.valideurs&&va.valideurs.length?esc(va.valideurs.join(", ")):'le responsable')+' valide le dossier tel quel. Toute modification ultérieure de la fiche, des champs ou des pièces annule la validation.';
+      h+='<div class="bloc"><div class="bloc-head"><h2>Validation du responsable</h2><span class="pill '+VE[0]+'">'+VE[1]+'</span></div><div class="backend">'+t+'</div>'+
+        '<div class="champs" style="padding-top:0"><div style="grid-column:1/-1"><label for="val-msg">Message ou commentaire (facultatif)</label><input id="val-msg" placeholder="ex. textes D1 relus, puissance confirmée en comité"></div></div>'+
+        '<div class="actions">'+(va.etat!=="demandee"&&va.etat!=="validee"?'<button class="primaire" data-action="val-demander" data-id="'+esc(d.id)+'">Demander la validation</button>':'')+
+        (va.etat!=="validee"?'<button data-action="val-valider" data-id="'+esc(d.id)+'">Valider</button><button data-action="val-refuser" data-id="'+esc(d.id)+'">Refuser</button>':'')+
+        '<span class="etat">Valider et refuser sont réservés à '+esc((va.valideurs||[]).join(", ")||"tous")+' (case « Vous »).</span></div></div>';
+    }
+    if(d.alertes.length) h+='<div class="alertes">'+d.alertes.map(a=>'<div class="al '+a.severite+'"><span>'+esc(a.texte)+'</span></div>').join("")+'</div>';
+    h+='<div class="grid2"><div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Fiche de la demande</h2><span class="pill '+classePill(d.statut)+'">'+esc(d.libelle_statut)+'</span></div><div class="champs">';
+    h+=selectChamp("statut","Étape",d.statut,f.etapes.map(e=>[e.cle,e.libelle]).concat(Object.entries(REF.hors_chaine)));
+    h+=champ("date_depot","Date de dépôt",d.date_depot,"date")+champ("interlocuteur","Interlocuteur",d.interlocuteur)+champ("site","Site",d.site)+champ("commune","Commune",d.commune)+champ("departement","Dépt",d.departement);
+    h+='<div class="sep">'+esc(f.libelle)+'</div>';
+    REF.champs_filiere[d.filiere].forEach(k=>{ const L=LIB[k]||[k]; const t=L[1]||"text";
+      if(t==="bool") h+=boolChamp(k,L[0],d[k]); else if(t==="choix") h+=selectChamp(k,L[0],d[k]||"",[["","—"]].concat(L[2])); else h+=champ(k,L[0],d[k],t); });
+    h+='<div style="grid-column:1/-1"><label for="f-prochaine_action">Prochaine action, à la main (remplace le calcul ; vider pour revenir au calcul)</label><input id="f-prochaine_action" data-k="prochaine_action" value="'+esc(d.prochaine_action||"")+'"></div>';
+    h+='<div style="grid-column:1/-1"><label for="f-notes">Notes</label><textarea id="f-notes" data-k="notes">'+esc(d.notes||"")+'</textarea></div></div>';
+    h+='<div class="actions"><button class="primaire" data-action="sauver" data-id="'+esc(d.id)+'">Enregistrer</button>'+
+      (d.filiere==="rte_ptf"?'<button data-action="aller" data-cible="d2">Fiche D2 et courriel</button>':(d.filiere==="rte_ee"?'<button data-action="aller" data-cible="robot">Robot D1</button>':(d.filiere==="enedis"?'<button data-action="aller" data-cible="robot">Robot Enedis</button>':'<button data-toast="Robot pas encore écrit pour cette filière : relevé du formulaire à faire.">Pré-remplir le portail</button>')))+
+      '<button data-action="synchroniser" data-id="'+esc(d.id)+'" title="Recopie nom, commune, puissance, GPS... depuis la fiche identité du site">Reprendre la fiche du site</button>'+
+      '<button class="danger" data-action="supprimer" data-id="'+esc(d.id)+'">Supprimer</button><span class="etat" id="msg">'+(d.modifie_le?'Modifié le '+esc(d.modifie_le)+' par '+esc(d.modifie_par||"interne"):'')+'</span></div></div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Commentaires et points à vérifier</h2><a class="etat" href="#/projet/'+esc(d.projet_code)+'">tout le projet</a></div>'+commentairesHtml(coms)+formCommentaire({projet:d.projet_code, demande:d.id, ouvert:false})+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Échanges</h2><span class="etat">'+ech.length+' échange'+(ech.length>1?"s":"")+(d.echanges_resume.nb_attente?' · '+d.echanges_resume.nb_attente+' sans réponse':'')+'</span></div>'+echangesHtml(ech)+formEchange({projet:d.projet_code, demande:d.id, contacts:contacts, ouvert:!ech.length})+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Journal de la demande</h2></div><div class="tbl-scroll"><table class="journal"><tbody>'+journalRows(d.journal,false)+'</tbody></table></div></div>';
+    h+='</div><div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Documents et liens pour cette étape</h2><a class="etat" href="#/documents">tous les documents</a></div>'+ressourcesHtml(res, d.statut)+'</div>';
+    if(pl){ const rt=await api("/robot/taches?demande="+encodeURIComponent(d.id)).catch(()=>({taches:[],agents:[]}));
+      h+='<div class="bloc" id="robot"><div class="bloc-head"><h2>Robot D1, portail RTE</h2><a class="etat" href="'+esc(pl.url)+'" target="_blank" rel="noopener">ouvrir le portail ↗</a></div>'+lancementHtml(d, pl)+'<div id="robot-taches" data-id="'+esc(d.id)+'">'+tachesRobotHtml(rt)+'</div>'+d1Html(pl, d.id)+'</div>';
+      if(rt.taches.some(t=>t.statut==="en_attente"||t.statut==="en_cours")) setTimeout(()=>majRobot(d.id),2500); }
+    if(ple){ const rt=await api("/robot/taches?demande="+encodeURIComponent(d.id)).catch(()=>({taches:[],agents:[]}));
+      h+='<div class="bloc" id="robot"><div class="bloc-head"><h2>Robot Enedis, portail raccordement</h2><a class="etat" href="https://www.raccordement-entreprise-enedis.fr/" target="_blank" rel="noopener">ouvrir le portail ↗</a></div>'+(ple.etapes.length?lancementEnedisHtml(d, ple):'')+'<div id="robot-taches" data-id="'+esc(d.id)+'">'+tachesRobotHtml(rt)+'</div>'+planEnedisHtml(ple)+
+        '<p class="pieces">Le portail Enedis crée un brouillon dès l\'écran d\'accueil : un essai laisse une demande non envoyée dans « Mon suivi de dossier ». Le robot s\'arrête sur l\'étape Échéance, le récapitulatif et l\'envoi sont à faire par vous.</p></div>';
+      if(rt.taches.some(t=>t.statut==="en_attente"||t.statut==="en_cours")) setTimeout(()=>majRobot(d.id),2500); }
+    if(d.filiere==="rte_ee" && (["depose","recevable","etude_recue","confirmation_demandee","clos"].includes(d.statut)||(d.analyses||[]).length)) h+=etudeHtml(d);
+    if(ptf && ad2) h+=d2Html(d, ad2, mel);
+    if(ptf && (["depose","recevable","ptf_recue","file_attente","convention"].includes(d.statut)||(d.analyses||[]).length)) h+=ptfHtml(d);
+    h+='<div class="bloc"><div class="bloc-head"><h2>Échéancier calculé</h2>'+(d.prochaine_echeance?'<span class="etat">prochaine : '+fmt(d.prochaine_echeance.date)+'</span>':'')+'</div>'+(d.echeances.length?'<ul class="jal">'+d.echeances.map(e=>'<li class="'+(e.fait?"fait":"")+'"><span class="dt">'+fmt(e.date)+'</span><span class="tx">'+esc(e.libelle)+'</span></li>').join("")+'</ul>':'<p class="pieces">Aucune échéance tant que la date de dépôt n\'est pas renseignée.</p>')+'</div>';
+    const obl=REF.pieces_obligatoires[d.filiere]||[];
+    h+='<div class="bloc"><div class="bloc-head"><h2>Pièces</h2><span class="etat">raccordement/'+esc(d.projet_code)+'/'+d.filiere+'/</span></div>'+d.pieces.map(x=>'<div class="fichier"><div class="ic"></div><div class="n"><div><a href="/api/pieces/'+x.id+'/fichier">'+esc(x.nom_fichier)+'</a></div><div class="lieu">'+esc(x.type)+'</div></div><div class="m">'+taille(x.taille_octets)+' · '+fmt(x.ajoute_le)+'</div><button data-action="retirer-piece" data-piece="'+x.id+'" data-id="'+esc(d.id)+'" title="Retirer">×</button></div>').join("")+
+      '<div class="depot" id="depot" data-id="'+esc(d.id)+'">Déposez un fichier ici ou cliquez pour choisir. Type : <select id="type-piece">'+REF.types_pieces.map(t=>'<option value="'+t+'">'+t.replace(/_/g," ")+'</option>').join("")+'</select><input type="file" id="fichier-piece" hidden></div>'+
+      (obl.length?'<p class="pieces">Obligatoire avant « déposé » : '+obl.map(t=>(d.pieces_manquantes.includes(t)?'<span class="pill crit">':'<span class="pill ok">')+esc(t.replace(/_/g," "))+'</span>').join(" ")+'</p>':'')+
+      (d.filiere==="rte_ee"?'<div class="actions" style="padding-bottom:0"><button data-action="plan-situation" data-code="'+esc(d.projet_code)+'">Plan de situation</button><button data-action="plan-installation" data-id="'+esc(d.id)+'" title="Fusionne plan de situation, plan d\'implantation et unifilaire en un PDF pour la D1">Assembler le plan de l\'installation</button></div>':'')+
+      (obl.includes("extrait_cadastral")?'<div class="actions"><button'+(d.pieces_manquantes.includes("extrait_cadastral")?' class="primaire"':'')+' data-action="extrait-cadastral" data-code="'+esc(d.projet_code)+'">Récupérer l\'extrait cadastral</button><span class="etat" id="msg-cad">cadastre.gouv.fr, d\'après les parcelles de la <a href="#/site/'+esc(d.projet_code)+'">fiche du site</a></span></div>':'')+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Pièces attendues</h2></div><p class="pieces">'+PT[d.filiere]+'</p></div>';
+    h+='</div></div>';
+    return h;
+  }
+  async function pageNouvelle(code,f){
+    const p=await api("/projets/"+encodeURIComponent(code)); const ff=F(f);
+    let h=crumbs([{l:"Tableau de bord",href:"#/"},{l:p.nom,href:"#/projet/"+code},{l:"Nouvelle demande"}]);
+    h+=head("Nouvelle demande "+ff.court,"Projet "+esc(p.nom)+". La commune et le département sont repris du projet, le statut démarre à « dossier en préparation ».");
+    h+='<div class="bloc"><div class="champs">'+champ("id","Code",code+"-"+ff.court.replace(/\s/g,"").toUpperCase())+selectChamp("filiere","Filière",f,REF.ordre_filieres.map(x=>[x,F(x).libelle]))+champ("site","Site","")+champ("commune","Commune",p.commune)+champ("departement","Département",p.departement)+'</div><div class="actions"><button class="primaire" data-action="creer-demande" data-projet="'+esc(code)+'">Créer</button><a class="btn" href="#/projet/'+code+'">Annuler</a><span class="etat" id="msg"></span></div></div>';
+    return h;
+  }
+  async function pageNouveauProjet(){
+    let h=crumbs([{l:"Tableau de bord",href:"#/"},{l:"Nouveau projet"}]);
+    h+=head("Nouveau projet","Un code court de trois ou quatre lettres, qui préfixera les codes des demandes.");
+    h+='<div class="bloc"><div class="champs">'+champ("code","Code","")+champ("nom","Nom","")+champ("commune","Commune","")+champ("departement","Département","")+champ("puissance_cible_mw","Puissance visée MW","","number")+'<div style="grid-column:1/-1"><label for="f-notes">Notes</label><textarea id="f-notes" data-k="notes"></textarea></div></div><div class="actions"><button class="primaire" data-action="creer-projet">Créer</button><a class="btn" href="#/">Annuler</a><span class="etat" id="msg"></span></div></div>';
+    return h;
+  }
+  let filtre="";
+  async function pageDemandes(){
+    const [list, projets]=await Promise.all([api("/demandes"+(filtre?"?filiere="+filtre:"")), api("/projets")]);
+    const noms={}; projets.forEach(p=>noms[p.code]=p.nom);
+    let h=head("Demandes","Toutes les demandes, tous projets, triées par projet puis par filière.");
+    h+='<div class="bloc"><div class="bloc-head"><h2>'+list.length+' demande'+(list.length>1?"s":"")+'</h2><div class="chips"><button class="chip'+(filtre===""?" on":"")+'" data-filtre="">Toutes</button>'+REF.ordre_filieres.map(f=>'<button class="chip'+(filtre===f?" on":"")+'" data-filtre="'+f+'">'+F(f).court+'</button>').join("")+'</div></div><div class="tbl-scroll"><table style="min-width:900px">'+enteteListe+'<tbody>'+lignesDemandes(list,noms)+'</tbody></table></div></div>';
+    return h;
+  }
+  let filtreMails="attente";
+  async function pageMails(){
+    const [ech, att, projets, demandes, contacts]=await Promise.all([api("/echanges"+(filtreMails==="attente"?"?attente=true":"?limite=300")), api("/echanges?attente=true"), api("/projets"), api("/demandes"), api("/contacts")]);
+    let h=head("Mails","Suivi des échanges avec les opérateurs, tous sites confondus. Un envoi reste « sans réponse » jusqu'à ce qu'un échange reçu arrive sur la même demande, ou que vous le cloriez. Au-delà de "+REF.delai_relance_jours+" jours, la relance remonte dans la prochaine action et le courriel du matin.",
+      '<div class="totaux"><div class="tot"><div class="v mono">'+att.length+'</div><div class="k">sans réponse</div></div></div>');
+    h+='<div class="bloc"><div class="bloc-head"><h2>'+(filtreMails==="attente"?"En attente de réponse":"Derniers échanges")+'</h2><div class="chips"><button class="chip'+(filtreMails==="attente"?" on":"")+'" data-fmail="attente">Sans réponse ('+att.length+')</button><button class="chip'+(filtreMails==="tous"?" on":"")+'" data-fmail="tous">Tous</button></div></div>'+
+      echangesHtml(ech,{avecDemande:true})+formEchange({contacts:contacts, projets:projets, demandes:demandes})+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Boîte mail</h2><span class="pill neutre">à brancher</span></div><div class="backend">La relève automatique des courriels n\'est pas encore branchée : le backend reste à choisir (Microsoft Graph avec accord de la DSI, transfert vers une adresse dédiée, ou autre). En attendant, saisie à la main ou dépôt de fichiers <code>.eml</code> (dans Outlook web : ouvrir le message, « … », Télécharger).<br><br>Point d\'entrée prévu pour le futur programme de relève : <code>POST /api/echanges</code> en JSON, avec <code>message_id</code> pour le dédoublonnage et l\'en-tête <code>X-Amont-Origine</code>. Sans projet ni demande, l\'objet est analysé pour retrouver la demande. Détail dans <a href="/api/docs">la documentation de l\'API</a>.</div></div>';
+    return h;
+  }
+  async function pageContacts(){
+    const cs=await api("/contacts");
+    let h=head("Contacts","Les interlocuteurs chez les opérateurs, les mairies, les propriétaires. Un échange est rattaché automatiquement au contact dont l'adresse correspond.");
+    h+='<div class="bloc"><div class="bloc-head"><h2>'+cs.length+' contact'+(cs.length>1?"s":"")+'</h2></div><div class="tbl-scroll"><table style="min-width:760px"><thead><tr><th>Nom</th><th>Organisation</th><th>Rôle</th><th>Courriel</th><th>Téléphone</th><th class="num">Échanges</th><th>Dernier</th><th></th></tr></thead><tbody>'+
+      (cs.length?cs.map(c=>'<tr><td class="projname">'+esc(c.nom)+(c.filiere?' <span class="ftag '+esc(c.filiere)+'">'+esc((REF.filieres[c.filiere]||{}).court||c.filiere)+'</span>':'')+'</td><td>'+esc(c.organisation||"")+'</td><td>'+esc(c.role||"")+'</td><td class="kv" style="font-size:12px">'+(c.email?'<a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a>':'')+'</td><td class="kv" style="font-size:12px">'+esc(c.telephone||"")+'</td><td class="num kv">'+c.nb_echanges+'</td><td class="kv" style="font-size:12px">'+fmt(c.dernier_echange)+'</td><td style="white-space:nowrap"><button data-action="editer-contact" data-contact="'+c.id+'" style="padding:3px 8px;font-size:11px">Modifier</button> <button data-action="supprimer-contact" data-contact="'+c.id+'" style="padding:3px 8px;font-size:11px">×</button></td></tr>').join(""):'<tr><td colspan="8" class="etat">Aucun contact.</td></tr>')+'</tbody></table></div></div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2 id="titre-contact">Nouveau contact</h2></div><div class="champs" id="form-contact">'+
+      ['nom:Nom','organisation:Organisation','role:Rôle','email:Courriel','telephone:Téléphone'].map(x=>{ const [k,l]=x.split(":"); return '<div><label for="c-'+k+'">'+l+'</label><input id="c-'+k+'" data-c="'+k+'"></div>'; }).join("")+
+      '<div><label for="c-filiere">Filière</label><select id="c-filiere" data-c="filiere"><option value="">—</option>'+REF.ordre_filieres.map(f=>'<option value="'+f+'">'+esc(F(f).court)+'</option>').join("")+'</select></div><div style="grid-column:1/-1"><label for="c-notes">Notes</label><textarea id="c-notes" data-c="notes"></textarea></div></div>'+
+      '<div class="actions"><button class="primaire" data-action="sauver-contact" data-contact="">Enregistrer</button><button data-action="vider-contact">Annuler</button><span class="etat" id="msg"></span></div></div>';
+    window.__contacts=cs;
+    return h;
+  }
+  async function pageVerifier(){
+    const [ouv, tous]=await Promise.all([api("/commentaires?a_verifier=true&ouverts=true"), api("/commentaires?a_verifier=true")]);
+    const faits=tous.filter(c=>c.statut==="verifie").slice(0,30);
+    let h=head("À vérifier","Les points signalés sur les fiches pré-remplies, à contrôler avant envoi. Chacun se ferme par « Vérifié », avec une réponse si besoin. Le nom affiché est celui choisi en haut à droite.",'<div class="totaux"><div class="tot"><div class="v mono">'+ouv.length+'</div><div class="k">ouverts</div></div></div>');
+    h+='<div class="bloc"><div class="bloc-head"><h2>Points ouverts</h2></div>'+commentairesHtml(ouv,{avecProjet:true, vide:"Rien à vérifier."})+'</div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Vérifiés récemment</h2></div>'+commentairesHtml(faits,{avecProjet:true, vide:"Aucun point vérifié pour l\'instant."})+'</div>';
+    return h;
+  }
+  async function pageDocuments(){
+    const list=await api("/ressources");
+    let h=head("Documents","Pour chaque opérateur et chaque étape, le formulaire, le document modèle ou le lien d'origine pour remplir la demande. Ils s'affichent sur la fiche de chaque demande, selon son étape. Les adresses changent : indiquez la date de vérification quand vous testez un lien.");
+    const groupes=["commun"].concat(REF.ordre_filieres);
+    groupes.forEach(f=>{ const l=list.filter(r=>r.filiere===f); if(!l.length && f!=="commun") return;
+      h+='<div class="bloc"><div class="bloc-head"><h2>'+(f==="commun"?"Toutes filières":esc(F(f).libelle))+'</h2><span class="etat">'+l.length+'</span></div>'+l.map(r=>'<div class="res"><div><div class="l">'+(r.url?'<a href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.libelle)+' ↗</a>':esc(r.libelle))+'</div>'+(r.notes?'<div class="n">'+esc(r.notes)+'</div>':'')+'<div class="m">'+esc((REF.types_ressource||{})[r.type]||r.type)+' · étape '+esc(etapeLib(f==="commun"?"rte_ee":f,r.etape))+(r.verifie_le?' · vérifié le '+fmt(r.verifie_le):' · non vérifié')+(r.url?' · '+esc(r.url):'')+'</div></div>'+
+        '<div class="bt">'+(r.fichier?'<a class="btn" style="padding:3px 8px;font-size:11px" href="/api/ressources/'+r.id+'/fichier">'+esc(r.nom_fichier||"fichier")+'</a>':'')+'<button data-action="joindre-ressource" data-rid="'+r.id+'" title="Joindre un document modèle">'+(r.fichier?"Remplacer":"Joindre")+'</button><button data-action="lien-ok" data-rid="'+r.id+'" title="Marquer le lien comme vérifié aujourd\'hui">Lien OK</button><button data-action="editer-ressource" data-rid="'+r.id+'">Modifier</button><button data-action="supprimer-ressource" data-rid="'+r.id+'">×</button></div></div>').join("")+'</div>'; });
+    const etapesOpts=f=>[["","Toutes les étapes"]].concat(((REF.filieres[f]||REF.filieres.rte_ee).etapes).map(e=>[e.cle,e.libelle]));
+    h+='<div class="bloc"><div class="bloc-head"><h2 id="titre-res">Nouveau document ou lien</h2></div><div class="champs" id="form-res">'+
+      '<div><label for="r-filiere">Filière</label><select id="r-filiere" data-r="filiere"><option value="commun">Toutes filières</option>'+REF.ordre_filieres.map(f=>'<option value="'+f+'">'+esc(F(f).court)+'</option>').join("")+'</select></div>'+
+      '<div><label for="r-etape">Étape</label><select id="r-etape" data-r="etape">'+etapesOpts("rte_ee").map(o=>'<option value="'+o[0]+'">'+esc(o[1])+'</option>').join("")+'</select></div>'+
+      '<div><label for="r-type">Type</label><select id="r-type" data-r="type">'+Object.entries(REF.types_ressource||{}).map(([k,v])=>'<option value="'+k+'">'+esc(v)+'</option>').join("")+'</select></div>'+
+      '<div><label for="r-verifie">Lien vérifié le</label><input type="date" id="r-verifie" data-r="verifie_le"></div>'+
+      '<div style="grid-column:1/-1"><label for="r-libelle">Libellé</label><input id="r-libelle" data-r="libelle"></div><div style="grid-column:1/-1"><label for="r-url">Adresse (https://… ou mailto:…)</label><input id="r-url" data-r="url"></div><div style="grid-column:1/-1"><label for="r-notes">Notes</label><textarea id="r-notes" data-r="notes"></textarea></div></div>'+
+      '<div class="actions"><button class="primaire" data-action="sauver-ressource" data-rid="">Enregistrer</button><button data-action="vider-ressource">Annuler</button><span class="etat">Pour joindre un fichier modèle (fiche D2 vierge…), enregistrez puis « Joindre ».</span></div><input type="file" id="fichier-res" hidden></div>';
+    window.__ressources=list;
+    return h;
+  }
+  async function pageJournal(){
+    const j=await api("/journal?limite=300");
+    let h=head("Journal","Chaque changement de champ, avec son auteur (adresse transmise par Cloudflare Access, ou « interne » en accès direct), son origine et l'heure. En ajout seul : c'est la trace opposable des dates de dépôt.");
+    h+='<div class="bloc"><div class="tbl-scroll"><table class="journal"><thead><tr><th>Horodatage</th><th>Demande</th><th>Changement</th><th>Auteur · origine</th></tr></thead><tbody>'+journalRows(j,true)+'</tbody></table></div></div>';
+    return h;
+  }
+  async function pageAlerte(){
+    const a=await api("/alerte/apercu");
+    let h=head("Courriel du matin","Envoyé à 8 h aux deux suiveurs, uniquement s'il y a quelque chose à dire. Voici ce que donnerait l'envoi de ce matin.");
+    let corps='<b>Objet : '+esc(a.objet)+'</b>\n\n';
+    if(!a.envoi){ corps+='Rien à envoyer ce matin ('+a.nb_alertes+' alerte'+(a.nb_alertes>1?'s':'')+' en cours, toutes déjà signalées).\n\nPour information, prochaines échéances :\n'; if(a.prochaines.length) a.prochaines.forEach(x=>corps+='  '+fmt(x.date)+'  '+x.demande_id+'  '+x.projet+'  '+x.libelle+'\n'); else corps+='  (aucune)\n'; }
+    else corps+=esc(a.corps);
+    h+='<div class="bloc"><div class="bloc-head"><h2>Aperçu</h2><span class="etat">'+a.nb_a_envoyer+' à envoyer sur '+a.nb_alertes+'</span></div><div class="mail">'+corps+'</div></div>';
+    h+='<p class="note">L\'envoi réel est fait par le script <b>2026_09_18_amont_alertes.py</b>, planifié le matin sur le serveur. Il marque les alertes envoyées ; cet aperçu ne marque rien.</p>';
+    return h;
+  }
+
+
+  /* ---------- sites, sources et fiche identite ---------- */
+  const ORIG={manuel:"saisie manuelle",extraction:"extrait",societe:"valeur société",projet:"repris du projet",import:"import"};
+  const STS={en_attente:["neutre","en file"],en_cours:["info","lecture…"],fait:["ok","lu"],erreur:["crit","à revoir"]};
+  const libChamp=k=>{ const c=REF.fiche.champs.find(x=>x.cle===k); return c?c.libelle:k; };
+  async function pageSites(){
+    const sites=await api("/sites");
+    let h=head("Sites et sources","Un site par projet. Déposez les fichiers du site (études de faisabilité, PLU, cadastre, plans, actes), la fiche identité se remplit, vous la corrigez et la validez, puis les demandes partent de la fiche.");
+    h+='<div class="bloc"><div class="bloc-head"><h2>'+sites.length+' sites</h2><a class="btn" href="#/nouveau-projet">Nouveau site</a></div><div class="tbl-scroll"><table style="min-width:900px"><thead><tr><th>Site</th><th class="num">Sources</th><th class="num">Fiche</th><th class="num">À vérifier</th><th class="num">Conflits</th>'+REF.ordre_filieres.map(f=>'<th>'+F(f).court+'</th>').join("")+'</tr></thead><tbody>';
+    sites.forEach(s=>{ h+='<tr class="lien" data-href="#/site/'+esc(s.code)+'"><td><div class="projname">'+esc(s.nom)+'</div><div class="lieu">'+esc(s.code)+' · '+esc([s.commune,s.departement].filter(Boolean).join(" · "))+'</div></td><td class="num kv">'+s.sources+'</td><td class="num kv">'+s.remplis+' / '+s.total+'</td><td class="num">'+(s.a_verifier?'<span class="pill warn">'+s.a_verifier+'</span>':'—')+'</td><td class="num">'+(s.propositions?'<span class="pill crit">'+s.propositions+'</span>':'—')+'</td>'+
+      REF.ordre_filieres.map(f=>{ const c=s.completude[f]; return '<td>'+(c.pret?'<span class="pill ok">prête</span>':'<span class="pill neutre">'+c.taux+' %</span>')+'</td>'; }).join("")+'</tr>'; });
+    return h+'</tbody></table></div></div>';
+  }
+  let pollSite=null;
+  async function pageSite(code){
+    const s=await api("/sites/"+encodeURIComponent(code)); const p=s.projet; const VER=s.verifications||{};
+    let h=crumbs([{l:"Sites et sources",href:"#/sites"},{l:p.nom}]);
+    const nAv=Object.values(s.fiche).filter(v=>v.valeur!=null&&v.valeur!==""&&!v.valide).length;
+    h+=head(esc(p.nom),esc(p.code)+' · '+esc([p.commune,p.departement].filter(Boolean).join(" · "))+' · '+(REF.ia?'extraction par IA ('+esc(REF.modele)+')':'extraction par règles, IA non configurée'),
+      '<div style="display:flex;gap:8px"><button class="primaire" data-action="tout-preparer" data-code="'+esc(p.code)+'" title="Demande RTE, extrait cadastral, plan de situation, textes D1 par l\'IA, bilan">Tout préparer</button><a class="btn" href="#/projet/'+esc(p.code)+'">Suivi des demandes</a></div>');
+    h+='<div id="prep" data-code="'+esc(p.code)+'"></div>';
+    h+='<div class="grid2"><div>';
+    // fiche
+    h+='<div class="bloc"><div class="bloc-head"><h2>Fiche identité</h2><span class="etat">'+(nAv?nAv+' valeur'+(nAv>1?"s":"")+' à vérifier, surlignée'+(nAv>1?"s":""):'tout est validé')+'</span></div>';
+    REF.fiche.groupes.forEach(g=>{
+      h+='<div class="fiche-g"><h3>'+esc(g)+'</h3>';
+      REF.fiche.champs.filter(c=>c.groupe===g).forEach(c=>{ const v=s.fiche[c.cle]||{}; const val=v.valeur==null?"":v.valeur; const av=val!==""&&!v.valide;
+        const typ=c.type==="number"?"number":(c.type==="date"?"date":"text");
+        const inp=c.type==="textarea"?'<textarea data-fk="'+c.cle+'" data-orig="'+esc(val)+'" id="fk-'+c.cle+'">'+esc(val)+'</textarea>':'<input data-fk="'+c.cle+'" data-orig="'+esc(val)+'" id="fk-'+c.cle+'" type="'+typ+'"'+(typ==="number"?' step="any"':'')+' value="'+esc(val)+'" title="'+esc(c.aide||"")+'">';
+        let prov=""; if(val!==""){ prov=(ORIG[v.origine]||esc(v.origine||""))+(v.source?' de <a href="/api/sources/'+v.source_id+'/fichier" title="'+esc(v.extrait||"")+'">'+esc(v.source)+'</a>':'')+(av?' · <a href="#" data-action="valider-champ" data-code="'+esc(p.code)+'" data-champ="'+c.cle+'">valider</a>':''); }
+        const pts=VER[c.cle]||[];
+        h+='<div class="fl'+(av?" av":"")+(pts.length?" sig":"")+'"><label for="fk-'+c.cle+'">'+esc(c.libelle)+'</label>'+inp+'<div class="prov">'+prov+(REF.ia&&REF.redaction&&REF.redaction[c.cle]?' · <a href="#" data-action="rediger" data-code="'+esc(p.code)+'" data-champ="'+c.cle+'" title="Rédige le texte depuis la fiche, '+REF.redaction[c.cle]+' caractères au plus, à relire">rédiger avec l\'IA</a>':'')+'</div><button class="flag" data-action="signaler" data-champ="'+c.cle+'" title="Signaler ce champ à faire vérifier">⚑</button>'+
+          pts.map(x=>'<div class="fl-sig"><b>⚑ à vérifier</b> '+esc(x.texte)+' <span class="etat">('+esc(x.auteur)+')</span><span style="flex:1"></span><button data-action="verifier-point" data-com="'+x.id+'">Vérifié</button></div>').join("")+
+          '<div class="fl-sig" id="sig-'+c.cle+'" hidden><input placeholder="Que faut-il vérifier ? ex. puissance à confirmer avec le comité" id="sigtx-'+c.cle+'"><button class="primaire" data-action="envoyer-signal" data-code="'+esc(p.code)+'" data-champ="'+c.cle+'">Signaler</button></div></div>'; });
+      h+='</div>'; });
+    h+='<div class="actions"><button class="primaire" data-action="sauver-fiche" data-code="'+esc(p.code)+'">Enregistrer les modifications</button>'+(nAv?'<button data-action="valider-tout" data-code="'+esc(p.code)+'">Tout valider ('+nAv+')</button>':'')+'<span class="etat" id="msg">Une saisie à la main est validée d\'office.</span></div></div>';
+    h+='</div><div>';
+    const nPts=Object.values(VER).reduce((n,l)=>n+l.length,0);
+    if(nPts) h+='<div class="bloc"><div class="bloc-head"><h2>⚑ '+nPts+' champ'+(nPts>1?"s":"")+' signalé'+(nPts>1?"s":"")+' à vérifier</h2><a class="etat" href="#/projet/'+esc(p.code)+'">commentaires du projet</a></div><p class="pieces">'+Object.entries(VER).map(([k,l])=>'<b>'+esc(libChamp(k))+'</b> : '+l.map(x=>esc(x.texte)).join(" ; ")).join("<br>")+'</p></div>';
+    // pret pour les demandes
+    h+='<div class="bloc"><div class="bloc-head"><h2>Prêt pour les demandes</h2><button class="primaire" data-action="preparer" data-code="'+esc(p.code)+'">Préparer les demandes manquantes</button></div><div class="pret">'+REF.ordre_filieres.map(f=>{ const c=s.completude[f]; const ds=s.demandes[f]||[];
+      const manq=c.manquants.map(libChamp), aver=c.a_verifier.map(libChamp);
+      return '<div><div class="t"><span class="ftag '+f+'">'+F(f).court+'</span>'+(c.pret?'<span class="pill ok">prête</span>':'<span class="kv">'+c.taux+' %</span>')+'</div><div class="bar"><i class="'+(c.pret?"ok":"")+'" style="width:'+c.taux+'%"></i></div>'+
+        (manq.length?'<div class="manq"><b>Manque :</b> '+esc(manq.join(", "))+'</div>':'')+(aver.length?'<div class="manq"><b>À vérifier :</b> '+esc(aver.join(", "))+'</div>':'')+
+        '<div class="canal">'+(ds.length?ds.map(d=>'<a class="ref" href="#/demande/'+esc(d.id)+'" style="text-decoration:none">'+esc(d.id)+'</a> '+esc(d.libelle_statut)).join("<br>"):'Pas encore de demande')+'<br>'+esc(c.canal||"")+'</div></div>'; }).join("")+'</div></div>';
+    // propositions
+    if(s.propositions.length) h+='<div class="bloc"><div class="bloc-head"><h2>Valeurs divergentes</h2><span class="etat">un fichier dit autre chose que la fiche</span></div>'+s.propositions.map(x=>'<div class="prop"><div><b>'+esc(libChamp(x.champ))+'</b> : '+esc(x.valeur)+' <span class="etat">(fiche : '+esc((s.fiche[x.champ]||{}).valeur)+')</span><div class="q">'+esc(x.source||"")+(x.extrait?' · « '+esc(x.extrait.slice(0,160))+' »':'')+'</div></div><div class="pb"><button data-action="accepter-prop" data-prop="'+x.id+'">Prendre</button><button data-action="rejeter-prop" data-prop="'+x.id+'">Ignorer</button></div></div>').join("")+'</div>';
+    // sources
+    const ex=s.extrait_cadastral, parc=(s.fiche.parcelles||{}).valeur||"";
+    h+='<div class="bloc"><div class="bloc-head"><h2>Extrait cadastral</h2>'+(ex?'<span class="pill ok">récupéré le '+fmt(ex.le)+'</span>':'<span class="pill neutre">pas encore récupéré</span>')+'</div>'+
+      (ex?'<div class="fichier"><div class="ic"></div><div class="n"><div><a href="/api/sources/'+ex.source_id+'/fichier">'+esc(ex.nom_fichier)+'</a></div><div class="lieu">Extrait du plan cadastral DGFiP · '+esc(ex.par||"")+'</div></div><div class="m">'+taille(ex.taille_octets)+'</div></div>':'')+
+      '<div class="backend">Extrait officiel du plan cadastral (DGFiP) récupéré sur cadastre.gouv.fr pour les parcelles de la fiche'+(parc?' : <b>'+esc(parc)+'</b>':', <b>à renseigner d\'abord</b> (champ « Parcelles cadastrales »)')+'. Une page par commune, commune du point de raccordement en premier, cadre et échelle choisis pour contenir les parcelles. Rangé dans les sources et joint aux demandes RTE étude exploratoire. Pour imposer la commune d\'une parcelle : « Exincourt : AD 45, AD 46 ; Sochaux : AH 367 ».</div>'+
+      '<div class="champs" style="padding-top:0"><div><label for="cad-centre">Centrer sur une parcelle (facultatif)</label><input id="cad-centre" placeholder="ex. AH 367"></div><div><label for="cad-echelle">Échelle</label><select id="cad-echelle"><option value="">automatique</option>'+[500,1000,1250,1500,2000,2500,4000,5000].map(e=>'<option value="'+e+'">1/'+e+'</option>').join("")+'</select></div></div>'+
+      '<div class="actions"><button class="primaire" data-action="extrait-cadastral" data-code="'+esc(p.code)+'"'+(parc?'':' disabled')+'>'+(ex?'Récupérer à nouveau':'Récupérer l\'extrait cadastral')+'</button><span class="etat" id="msg-cad">20 s à 1 min</span></div></div>';
+    const ps=s.plan_situation;
+    h+='<div class="bloc"><div class="bloc-head"><h2>Plan de situation</h2>'+(ps?'<span class="pill ok">récupéré le '+fmt(ps.le)+'</span>':'<span class="pill neutre">pas encore récupéré</span>')+'</div>'+
+      (ps?'<div class="fichier"><div class="ic"></div><div class="n"><div><a href="/api/sources/'+ps.source_id+'/fichier">'+esc(ps.nom_fichier)+'</a></div><div class="lieu">Plan de situation DGFiP · '+esc(ps.par||"")+'</div></div><div class="m">'+taille(ps.taille_octets)+'</div></div>':'')+
+      '<div class="backend">Plan de situation officiel (DGFiP) du site entier sur une page : toutes les communes, leurs limites, les sections et les cours d\'eau, au 1/5000 au plus. Joint aux demandes RTE étude exploratoire, puis fusionné dans le « plan de l\'installation » de la D1 avec le plan d\'implantation et l\'unifilaire s\'ils sont déposés.</div>'+
+      '<div class="actions"><button'+(ps?'':' class="primaire"')+' data-action="plan-situation" data-code="'+esc(p.code)+'"'+(parc?'':' disabled')+'>'+(ps?'Récupérer à nouveau':'Récupérer le plan de situation')+'</button><span class="etat" id="msg-sit">20 s à 1 min</span></div></div>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Sources du site</h2>'+(s.sources.length?'<button data-action="reextraire-tout" data-code="'+esc(p.code)+'">Tout relire</button>':'')+'</div>'+
+      '<div class="depot" id="depot-src" data-code="'+esc(p.code)+'">Déposez ici un ou plusieurs fichiers, ou cliquez pour choisir. PDF, Word, Excel, PowerPoint, JSON, images.<input type="file" id="fichiers-src" multiple hidden></div>'+
+      s.sources.map(x=>{ const st=STS[x.statut]||["neutre",x.statut]; return '<div class="fichier"><div class="ic"></div><div class="n"><div><a href="/api/sources/'+x.id+'/fichier">'+esc(x.nom_fichier)+'</a></div><div class="lieu">'+esc(REF.types_sources[x.type_source]||x.type_source)+' · <span class="pill '+st[0]+' src-st">'+st[1]+'</span>'+(x.statut==="fait"?' '+x.nb_propositions+' valeur'+(x.nb_propositions>1?"s":"")+(x.methode?' ('+esc({ia:"IA","ia+regles":"règles + IA",regles:"règles"}[x.methode]||x.methode)+')':''):'')+(x.erreur?'<br>'+esc(x.erreur):'')+'</div></div><div class="m">'+taille(x.taille_octets)+'</div><button data-action="reextraire" data-source="'+x.id+'" title="Relire">↻</button><button data-action="retirer-source" data-source="'+x.id+'" title="Retirer">×</button></div>'; }).join("")+'</div>';
+    h+='</div></div>';
+    clearTimeout(pollSite);
+    if(s.sources.some(x=>x.statut==="en_attente"||x.statut==="en_cours")){ const ici=location.hash; pollSite=setTimeout(()=>{ if(location.hash===ici) route(true); },2500); }
+    return h;
+  }
+  async function deposerSources(code, fichiers){
+    const fd=new FormData(); [...fichiers].forEach(f=>fd.append("fichiers",f));
+    toast("Envoi de "+fichiers.length+" fichier"+(fichiers.length>1?"s":"")+"…");
+    try{ const r=await fetch("/api/sites/"+encodeURIComponent(code)+"/sources",{method:"POST",body:fd,headers:entetes(false)}); if(!r.ok){ const j=await r.json().catch(()=>({})); throw new Error(j.erreur||("erreur "+r.status)); } toast("Fichiers déposés, lecture en cours."); route(); }
+    catch(e){ toast(e.message); }
+  }
+
+  /* ---------- actions ---------- */
+  function lireFormulaire(){ const o={}; document.querySelectorAll("#app [data-k]").forEach(el=>{ const k=el.dataset.k; let v=el.value; if(el.dataset.t==="bool"){ o[k]=v==="oui"; return; } if(el.type==="number") v=v===""?null:Number(v); o[k]=v===""?null:v; }); return o; }
+  async function action(btn){
+    const a=btn.dataset.action, msg=$("#msg");
+    try{
+      if(a==="sauver"){ const o=lireFormulaire(); await api("/demandes/"+encodeURIComponent(btn.dataset.id),{method:"PATCH",body:JSON.stringify(o)}); toast("Enregistré, journalisé au nom de "+MOI+"."); route(); }
+      if(a==="supprimer"){ if(btn.dataset.arme!=="1"){ btn.dataset.arme="1"; btn.textContent="Confirmer la suppression"; setTimeout(()=>{btn.dataset.arme="";btn.textContent="Supprimer";},5000); return; } await api("/demandes/"+encodeURIComponent(btn.dataset.id),{method:"DELETE"}); toast("Demande supprimée."); location.hash="#/"; }
+      if(a==="creer-demande"){ const o=lireFormulaire(); o.projet_code=btn.dataset.projet; const d=await api("/demandes",{method:"POST",body:JSON.stringify(o)}); toast("Demande créée."); location.hash="#/demande/"+d.id; }
+      if(a==="creer-projet"){ const o=lireFormulaire(); const p=await api("/projets",{method:"POST",body:JSON.stringify(o)}); toast("Projet créé."); location.hash="#/projet/"+p.code; }
+      if(a==="sauver-projet"){ const o=lireFormulaire(); await api("/projets/"+encodeURIComponent(btn.dataset.code),{method:"PATCH",body:JSON.stringify(o)}); toast("Projet enregistré."); route(); }
+      if(a==="sauver-fiche"){ const o={}; document.querySelectorAll("#app [data-fk]").forEach(el=>{ if(el.value!==el.dataset.orig) o[el.dataset.fk]=el.value===""?null:el.value; }); if(!Object.keys(o).length){ toast("Aucune modification."); return; } await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/fiche",{method:"PATCH",body:JSON.stringify(o)}); toast(Object.keys(o).length+" champ(s) enregistré(s) et validé(s)."); route(); }
+      if(a==="valider-tout"){ await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/fiche/valider",{method:"POST",body:"{}"}); toast("Fiche validée."); route(); }
+      if(a==="valider-champ"){ await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/fiche/valider",{method:"POST",body:JSON.stringify({champs:[btn.dataset.champ]})}); route(); }
+      if(a==="accepter-prop"){ await api("/propositions/"+btn.dataset.prop+"/accepter",{method:"POST"}); toast("Valeur reprise dans la fiche."); route(); }
+      if(a==="rejeter-prop"){ await api("/propositions/"+btn.dataset.prop+"/rejeter",{method:"POST"}); route(); }
+      if(a==="reextraire"){ await api("/sources/"+btn.dataset.source+"/extraire",{method:"POST"}); route(); }
+      if(a==="reextraire-tout"){ await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/extraire",{method:"POST"}); toast("Relecture lancée."); route(); }
+      if(a==="retirer-source"){ if(btn.dataset.arme!=="1"){ btn.dataset.arme="1"; btn.textContent="Confirmer"; setTimeout(()=>{btn.dataset.arme="";btn.textContent="×";},4000); return; } await api("/sources/"+btn.dataset.source,{method:"DELETE"}); toast("Source retirée. Les valeurs déjà dans la fiche restent."); route(); }
+      if(a==="rediger"){ const lib=btn.textContent; btn.textContent="rédaction en cours…"; btn.style.pointerEvents="none";
+        try{ const r=await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/rediger",{method:"POST",body:JSON.stringify({champ:btn.dataset.champ})});
+          toast("Texte rédigé ("+r.longueur+" / "+r.limite+" caractères, "+r.secondes+" s)"+(r.en_attente?" : le champ était rempli, la proposition est dans « Valeurs divergentes ».":", à relire.")+(r.nombres_a_verifier&&r.nombres_a_verifier.length?" Nombres à vérifier : "+r.nombres_a_verifier.join(", "):""));
+          route(true); }
+        finally{ btn.textContent=lib; btn.style.pointerEvents=""; }
+        return; }
+      if(a==="reporter"){ await api("/analyses/"+btn.dataset.analyse+"/reporter",{method:"POST",body:JSON.stringify({solution:Number(btn.dataset.solution)})}); toast("Valeurs reportées dans la demande, point à vérifier créé."); route(true); return; }
+      if(a==="lire-piece"){ const r=await api("/pieces/"+btn.dataset.piece+"/lire",{method:"POST",body:"{}"}); toast(r.type==="ptf_rte"?"PTF n° "+(r.donnees.num_ptf||"?")+" lue.":"Étude n° "+(r.donnees.num_etude||"?")+" lue."); route(true); return; }
+      if(a==="robot"){ const r=await api("/demandes/"+encodeURIComponent(btn.dataset.id)+"/robot",{method:"POST",body:JSON.stringify({mode:btn.dataset.mode,jusqua:Number(btn.dataset.jusqua||5)})});
+        toast(r.agent_en_ligne?"Robot lancé : il s'ouvre dans Chrome sur le poste.":"Tâche en file : elle partira quand l'agent du poste sera lancé."); route(true); return; }
+      if(a==="robot-annuler"){ await api("/robot/taches/"+btn.dataset.tache+"/annuler",{method:"POST",body:"{}"}); toast("Tâche annulée."); route(true); return; }
+      if(a==="val-demander"||a==="val-valider"||a==="val-refuser"){ const m=($("#val-msg")||{}).value||"";
+        const ch={"val-demander":"demander","val-valider":"valider","val-refuser":"refuser"}[a];
+        if(a==="val-refuser"&&!m.trim()){ toast("Indiquez le motif du refus dans le champ commentaire."); return; }
+        await api("/demandes/"+encodeURIComponent(btn.dataset.id)+"/validation/"+ch,{method:"POST",body:JSON.stringify(a==="val-demander"?{message:m}:{commentaire:m})});
+        toast({demander:"Validation demandée : elle apparaît dans « À vérifier ».",valider:"Dossier validé.",refuser:"Validation refusée."}[ch]); route(true); return; }
+      if(a==="fermer-prep"){ prepId=null; const z=$("#prep"); if(z) z.innerHTML=""; return; }
+      if(a==="tout-preparer"){ const t=await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/tout-preparer",{method:"POST",body:"{}"}); suivrePrep(t.id); return; }
+      if(a==="plan-situation"){ const lib=btn.textContent; btn.disabled=true; btn.textContent="Récupération sur cadastre.gouv.fr…";
+        try{ const r=await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/plan-situation",{method:"POST",body:"{}"});
+          toast(r.bilan+(r.pieces.length?" Joint à "+r.pieces.map(x=>x.demande_id).join(", ")+(r.plans_installation.length?", plan de l'installation réassemblé.":"."):" Aucune demande RTE EE à laquelle le joindre."));
+          route(true); }
+        finally{ btn.disabled=false; btn.textContent=lib; }
+        return; }
+      if(a==="plan-installation"){ const r=await api("/demandes/"+encodeURIComponent(btn.dataset.id)+"/plan-installation",{method:"POST",body:"{}"});
+        toast("Plan de l'installation assemblé : "+r.contenu.map(t=>t.replace(/_/g," ")).join(" + ")+", "+Math.round(r.taille_octets/1024)+" ko."); route(true); return; }
+      if(a==="extrait-cadastral"){ const m=$("#msg-cad"), corps={}; const c=$("#cad-centre"), e=$("#cad-echelle");
+        if(c&&c.value.trim()) corps.centrer_sur=c.value.trim(); if(e&&e.value) corps.echelle=Number(e.value);
+        btn.disabled=true; const lib=btn.textContent; btn.textContent="Récupération sur cadastre.gouv.fr…"; if(m) m.textContent="20 s à 1 min, ne pas quitter la page";
+        try{ const r=await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/extrait-cadastral",{method:"POST",body:JSON.stringify(corps)});
+          toast(r.bilan+(r.pieces.length?" Joint à "+r.pieces.map(x=>x.demande_id).join(", ")+".":" Aucune demande RTE EE à laquelle le joindre.")+(r.point_a_verifier?" Un point est signalé à vérifier.":""));
+          route(true); }
+        finally{ btn.disabled=false; btn.textContent=lib; }
+        return; }
+      if(a==="preparer"){ const r=await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/preparer",{method:"POST",body:"{}"}); toast(r.length?r.length+" demande(s) créée(s) : "+r.map(d=>d.id).join(", "):"Toutes les demandes existent déjà."); route(); }
+      if(a==="synchroniser"){ await api("/demandes/"+encodeURIComponent(btn.dataset.id)+"/synchroniser",{method:"POST"}); toast("Fiche du site recopiée dans la demande."); route(); }
+      if(a==="signaler"){ const z=$("#sig-"+btn.dataset.champ); z.hidden=!z.hidden; if(!z.hidden) $("#sigtx-"+btn.dataset.champ).focus(); return; }
+      if(a==="envoyer-signal"){ const t=$("#sigtx-"+btn.dataset.champ).value.trim()||"Valeur à confirmer"; await api("/commentaires",{method:"POST",body:JSON.stringify({projet_code:btn.dataset.code, cible:"fiche:"+btn.dataset.champ, texte:t, a_verifier:true})}); toast("Champ signalé à vérifier."); route(true); }
+      if(a==="verifier-point"){ const r=$("#rep-"+btn.dataset.com); await api("/commentaires/"+btn.dataset.com,{method:"PATCH",body:JSON.stringify({statut:"verifie", reponse:r?r.value:""})}); toast("Point vérifié."); route(true); }
+      if(a==="rouvrir-point"){ await api("/commentaires/"+btn.dataset.com,{method:"PATCH",body:JSON.stringify({statut:"ouvert"})}); route(true); }
+      if(a==="supprimer-com"){ if(btn.dataset.arme!=="1"){ btn.dataset.arme="1"; btn.textContent="Confirmer"; setTimeout(()=>{btn.dataset.arme="";btn.textContent="×";},4000); return; } await api("/commentaires/"+btn.dataset.com,{method:"DELETE"}); route(true); }
+      if(a==="creer-com"){ const t=$("#com-texte").value.trim(); if(!t){ toast("Commentaire vide."); return; } const o={projet_code:btn.dataset.projet, texte:t, a_verifier:$("#com-verif").checked}; const sd=$("#com-demande"); o.demande_id=sd?sd.value||null:(btn.dataset.demande||null); await api("/commentaires",{method:"POST",body:JSON.stringify(o)}); toast(o.a_verifier?"Point à vérifier publié.":"Commentaire publié."); route(true); }
+      if(a==="generer-d2"){ btn.disabled=true; const r=await api("/demandes/"+encodeURIComponent(btn.dataset.id)+"/d2",{method:"POST",body:"{}"});
+        toast("D2 générée : "+r.piece.nom_fichier+(r.manquants.length?" · "+r.manquants.length+" case(s) à compléter":"")); route(true); return; }
+      if(a==="aller"){ const el=document.getElementById(btn.dataset.cible); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); return; }
+      if(a==="copier"){ try{ await navigator.clipboard.writeText(btn.dataset.texte); toast("Copié."); }catch(e){ toast(btn.dataset.texte); } return; }
+      if(a==="editer-ressource"){ const r=(window.__ressources||[]).find(x=>String(x.id)===btn.dataset.rid); if(!r) return; document.querySelectorAll("#form-res [data-r]").forEach(el=>{ el.value=r[el.dataset.r]||""; }); remplirEtapes(r.filiere, r.etape||""); $("[data-action=sauver-ressource]").dataset.rid=r.id; $("#titre-res").textContent="Modifier : "+r.libelle; $("#r-libelle").scrollIntoView({block:"center"}); return; }
+      if(a==="vider-ressource"){ document.querySelectorAll("#form-res [data-r]").forEach(el=>{ if(el.tagName!=="SELECT") el.value=""; }); $("[data-action=sauver-ressource]").dataset.rid=""; $("#titre-res").textContent="Nouveau document ou lien"; return; }
+      if(a==="sauver-ressource"){ const o={}; document.querySelectorAll("#form-res [data-r]").forEach(el=>o[el.dataset.r]=el.value.trim()); if(!o.libelle){ toast("Le libellé est obligatoire."); return; }
+        if(btn.dataset.rid) await api("/ressources/"+btn.dataset.rid,{method:"PATCH",body:JSON.stringify(o)}); else await api("/ressources",{method:"POST",body:JSON.stringify(o)}); toast("Document enregistré."); route(); }
+      if(a==="supprimer-ressource"){ if(btn.dataset.arme!=="1"){ btn.dataset.arme="1"; btn.textContent="Confirmer"; setTimeout(()=>{btn.dataset.arme="";btn.textContent="×";},4000); return; } await api("/ressources/"+btn.dataset.rid,{method:"DELETE"}); toast("Document retiré."); route(); }
+      if(a==="lien-ok"){ await api("/ressources/"+btn.dataset.rid,{method:"PATCH",body:JSON.stringify({verifie_le:new Date().toISOString().slice(0,10)})}); toast("Lien marqué vérifié aujourd'hui."); route(true); }
+      if(a==="joindre-ressource"){ const f=$("#fichier-res"); f.dataset.rid=btn.dataset.rid; f.click(); return; }
+      if(a==="creer-echange"){ const o={}; document.querySelectorAll("#form-ech [data-e]").forEach(el=>{ const k=el.dataset.e; if(el.type==="checkbox") o[k]=el.checked; else if(el.value!=="") o[k]=el.value; });
+        if(btn.dataset.projet) o.projet_code=btn.dataset.projet; if(btn.dataset.demande) o.demande_id=btn.dataset.demande;
+        if(o.contact_id) o.contact_id=Number(o.contact_id); if(o.sens!=="envoye") o.attend_reponse=false;
+        if(!o.projet_code && !o.demande_id){ toast("Choisissez un projet."); return; } if(!o.objet && !o.resume){ toast("Indiquez au moins un objet ou un résumé."); return; }
+        await api("/echanges",{method:"POST",body:JSON.stringify(o)}); toast("Échange enregistré."); route(); }
+      if(a==="clore-attente"){ await api("/echanges/"+btn.dataset.ech,{method:"PATCH",body:JSON.stringify({attend_reponse:false})}); toast("Attente close."); route(); }
+      if(a==="rouvrir-attente"){ await api("/echanges/"+btn.dataset.ech,{method:"PATCH",body:JSON.stringify({attend_reponse:true, repondu_le:null})}); toast("En attente de réponse."); route(); }
+      if(a==="supprimer-echange"){ if(btn.dataset.arme!=="1"){ btn.dataset.arme="1"; btn.textContent="Confirmer"; setTimeout(()=>{btn.dataset.arme="";btn.textContent="×";},4000); return; } await api("/echanges/"+btn.dataset.ech,{method:"DELETE"}); toast("Échange retiré."); route(); }
+      if(a==="sans-objet"){ const motif=prompt("Pourquoi cette filière est sans objet pour ce site ? (facultatif)",""); if(motif===null) return; await api("/projets/"+encodeURIComponent(btn.dataset.code)+"/filieres/"+btn.dataset.filiere,{method:"PUT",body:JSON.stringify({etat:"sans_objet",motif:motif})}); toast("Filière marquée sans objet."); route(); }
+      if(a==="a-suivre"){ await api("/projets/"+encodeURIComponent(btn.dataset.code)+"/filieres/"+btn.dataset.filiere,{method:"PUT",body:JSON.stringify({etat:null})}); toast("Filière remise à suivre."); route(); }
+      if(a==="editer-contact"){ const c=(window.__contacts||[]).find(x=>String(x.id)===btn.dataset.contact); if(!c) return; document.querySelectorAll("#form-contact [data-c]").forEach(el=>el.value=c[el.dataset.c]||""); $("[data-action=sauver-contact]").dataset.contact=c.id; $("#titre-contact").textContent="Modifier "+c.nom; $("#c-nom").focus(); }
+      if(a==="vider-contact"){ document.querySelectorAll("#form-contact [data-c]").forEach(el=>el.value=""); $("[data-action=sauver-contact]").dataset.contact=""; $("#titre-contact").textContent="Nouveau contact"; }
+      if(a==="sauver-contact"){ const o={}; document.querySelectorAll("#form-contact [data-c]").forEach(el=>o[el.dataset.c]=el.value.trim()); if(!o.nom){ toast("Le nom est obligatoire."); return; }
+        if(btn.dataset.contact) await api("/contacts/"+btn.dataset.contact,{method:"PATCH",body:JSON.stringify(o)}); else await api("/contacts",{method:"POST",body:JSON.stringify(o)}); toast("Contact enregistré."); route(); }
+      if(a==="supprimer-contact"){ if(btn.dataset.arme!=="1"){ btn.dataset.arme="1"; btn.textContent="Confirmer"; setTimeout(()=>{btn.dataset.arme="";btn.textContent="×";},4000); return; } await api("/contacts/"+btn.dataset.contact,{method:"DELETE"}); toast("Contact retiré, ses échanges restent."); route(); }
+      if(a==="retirer-piece"){ await api("/pieces/"+btn.dataset.piece,{method:"DELETE"}); toast("Pièce retirée."); route(); }
+    }catch(e){ if(msg) msg.textContent=e.message; toast(e.message); }
+  }
+  function remplirEtapes(f, val){ const sel=$("#r-etape"); if(!sel) return; const ff=REF.filieres[f==="commun"?"rte_ee":f]||REF.filieres.rte_ee; sel.innerHTML='<option value="">Toutes les étapes</option>'+ff.etapes.map(e=>'<option value="'+e.cle+'">'+esc(e.libelle)+'</option>').join(""); sel.value=val||""; }
+  async function joindreRessource(rid, fichier){
+    const fd=new FormData(); fd.append("fichier",fichier);
+    try{ const r=await fetch("/api/ressources/"+rid+"/fichier",{method:"POST",body:fd,headers:entetes(false)}); if(!r.ok){ const j=await r.json().catch(()=>({})); throw new Error(j.erreur||("erreur "+r.status)); } toast("Document joint."); route(true); }
+    catch(e){ toast(e.message); } }
+  const PREP_ST={en_cours:["info","en cours…"],fait:["ok","fait"],deja:["neutre","déjà fait"],ignore:["neutre","sans objet"],erreur:["crit","erreur"]};
+  let prepId=null;
+  async function suivrePrep(id){ prepId=id; const zone=$("#prep"); if(!zone) return;
+    let t; try{ t=await api("/taches/"+id); }catch(e){ zone.innerHTML='<div class="err">'+esc(e.message)+'</div>'; return; }
+    zone.innerHTML='<div class="bloc"><div class="bloc-head"><h2>Préparation du site</h2><span class="pill '+(t.fini?"ok":"info")+'">'+(t.fini?"terminée":"en cours, 1 à 5 min")+'</span></div><ul class="jal">'+
+      t.etapes.map(e=>{ const st=PREP_ST[e.statut]||["neutre",e.statut]; return '<li><span class="pill '+st[0]+'" style="flex:0 0 auto">'+st[1]+'</span><span class="tx"><b>'+esc(e.nom)+'</b>'+(e.detail?' · '+esc(e.detail):'')+'</span></li>'; }).join("")+'</ul>'+
+      (t.fini?'<div class="actions"><button data-action="fermer-prep">Fermer</button><span class="etat">La fiche ci-dessous est à jour : valeurs surlignées à vérifier, puis demande de validation sur la fiche de la demande.</span></div>':'')+'</div>';
+    if(!t.fini) setTimeout(()=>{ if(prepId===id && $("#prep")) suivrePrep(id); },2000);
+    else if(!zone.dataset.rafraichi){ zone.dataset.rafraichi="1"; const html=zone.innerHTML; await route(true); const z=$("#prep"); if(z){ z.innerHTML=html; z.dataset.rafraichi="1"; } }
+  }
+  async function deposerEml(zone, fichiers){
+    const fd=new FormData(); [...fichiers].forEach(f=>fd.append("fichiers",f));
+    let proj=zone.dataset.projet, dem=zone.dataset.demande;
+    if(!proj && !dem){ const sp=$("#e-projet"), sd=$("#e-demande"); if(sp&&sp.value) proj=sp.value; if(sd&&sd.value) dem=sd.value; }
+    if(proj) fd.append("projet_code",proj); if(dem) fd.append("demande_id",dem);
+    toast("Lecture de "+fichiers.length+" courriel"+(fichiers.length>1?"s":"")+"…");
+    try{ const r=await fetch("/api/echanges/eml",{method:"POST",body:fd,headers:entetes(false)}); const j=await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.erreur||("erreur "+r.status));
+      const n=j.crees.filter(e=>!e.doublon).length, dbl=j.crees.length-n;
+      let t=n+" courriel"+(n>1?"s":"")+" enregistré"+(n>1?"s":"")+(dbl?", "+dbl+" déjà présent"+(dbl>1?"s":""):"");
+      if(j.refuses.length) t+=" · refusé : "+j.refuses.map(x=>(x.objet||x.fichier)+" ("+x.motif+")").join(" ; ");
+      toast(t); route(); }
+    catch(e){ toast(e.message); }
+  }
+  async function deposer(id, fichier){
+    const fd=new FormData(); fd.append("fichier",fichier); fd.append("type",$("#type-piece").value);
+    try{ const r=await fetch("/api/demandes/"+encodeURIComponent(id)+"/pieces",{method:"POST",body:fd,headers:entetes(false)}); if(!r.ok){ const j=await r.json().catch(()=>({})); throw new Error(j.erreur||("erreur "+r.status)); } toast("Pièce ajoutée."); route(); }
+    catch(e){ toast(e.message); }
+  }
+
+  document.addEventListener("click",ev=>{
+    const t=ev.target.closest("[data-toast]"); if(t){ ev.preventDefault(); toast(t.dataset.toast); return; }
+    const b=ev.target.closest("[data-action]"); if(b){ ev.preventDefault(); action(b); return; }
+    const c=ev.target.closest("[data-filtre]"); if(c){ filtre=c.dataset.filtre; route(); return; }
+    const fm=ev.target.closest("[data-fmail]"); if(fm){ filtreMails=fm.dataset.fmail; route(); return; }
+    const det=ev.target.closest("#depot-etude"); if(det){ $("#fichier-etude").click(); return; }
+    const de=ev.target.closest("#depot-eml"); if(de && !ev.target.closest("a")){ $("#fichiers-eml").click(); return; }
+    const dz=ev.target.closest("#depot"); if(dz && !ev.target.closest("select")){ $("#fichier-piece").click(); return; }
+    const ds=ev.target.closest("#depot-src"); if(ds){ $("#fichiers-src").click(); return; }
+    const tr=ev.target.closest("tr.lien"); if(tr && !ev.target.closest("a,button")){ location.hash=tr.dataset.href; }
+  });
+  document.addEventListener("change",ev=>{ if(ev.target.id==="fichier-piece" && ev.target.files[0]) deposer($("#depot").dataset.id, ev.target.files[0]);
+    if(ev.target.id==="fichiers-src" && ev.target.files.length) deposerSources($("#depot-src").dataset.code, ev.target.files);
+    if(ev.target.id==="fichier-etude" && ev.target.files[0]) deposerEtude($("#depot-etude").dataset.id, ev.target.files[0]);
+    if(ev.target.id==="fichiers-eml" && ev.target.files.length) deposerEml($("#depot-eml"), ev.target.files);
+    if(ev.target.id==="fichier-res" && ev.target.files[0]) joindreRessource(ev.target.dataset.rid, ev.target.files[0]);
+    if(ev.target.id==="r-filiere") remplirEtapes(ev.target.value, "");
+    if(ev.target.id==="moi"){ const v=ev.target.value.trim(); try{ localStorage.setItem("amont_auteur", v); }catch(e){} MOI=v||"interne"; toast(v?"Vos modifications seront signées « "+v+" ».":"Modifications signées « interne »."); route(true); }
+    if(ev.target.id==="e-sens"){ const ch=$("#e-attend"); if(ch) ch.checked=ev.target.value==="envoye"; }
+    if(ev.target.dataset && ev.target.dataset.fk!==undefined){ ev.target.closest(".fl").classList.toggle("mod", ev.target.value!==ev.target.dataset.orig); } });
+  document.addEventListener("input",ev=>{ if(ev.target.dataset && ev.target.dataset.fk!==undefined){ ev.target.closest(".fl").classList.toggle("mod", ev.target.value!==ev.target.dataset.orig); } });
+  document.addEventListener("dragover",ev=>{ const dz=ev.target.closest("#depot,#depot-src,#depot-eml,#depot-etude"); if(dz){ ev.preventDefault(); dz.classList.add("on"); } });
+  document.addEventListener("dragleave",ev=>{ const dz=ev.target.closest("#depot,#depot-src,#depot-eml,#depot-etude"); if(dz) dz.classList.remove("on"); });
+  document.addEventListener("drop",ev=>{ const dz=ev.target.closest("#depot,#depot-src,#depot-eml,#depot-etude"); if(dz){ ev.preventDefault(); dz.classList.remove("on");
+    if(dz.id==="depot-etude"){ if(ev.dataTransfer.files[0]) deposerEtude(dz.dataset.id, ev.dataTransfer.files[0]); return; }
+    if(dz.id==="depot-eml"){ if(ev.dataTransfer.files.length) deposerEml(dz, ev.dataTransfer.files); return; }
+    if(dz.id==="depot-src"){ if(ev.dataTransfer.files.length) deposerSources(dz.dataset.code, ev.dataTransfer.files); return; }
+    const f=ev.dataTransfer.files[0]; if(f) deposer(dz.dataset.id,f); } });
+
+  /* ---------- routeur ---------- */
+  async function route(silencieux){
+    const hs=(location.hash||"#/").slice(2).split("/"); const r=hs[0]||""; let on="accueil", html;
+    if(r!=="site") clearTimeout(pollSite);
+    const y=window.scrollY;
+    try{
+      if(r===""){ html=await pageAccueil(); }
+      else if(r==="sites"){ html=await pageSites(); on="sites"; }
+      else if(r==="site"){ if(silencieux && document.querySelector("#app .fl.mod")){ return; } html=await pageSite(decodeURIComponent(hs[1])); on="sites"; }
+      else if(r==="projets"){ html=await pageProjets(); on="projets"; }
+      else if(r==="projet"){ html=await pageProjet(decodeURIComponent(hs[1])); on="projets"; }
+      else if(r==="nouveau-projet"){ html=await pageNouveauProjet(); on="projets"; }
+      else if(r==="demande"){ html=await pageDemande(decodeURIComponent(hs[1])); on="demandes"; }
+      else if(r==="demandes"){ html=await pageDemandes(); on="demandes"; }
+      else if(r==="nouvelle"){ html=await pageNouvelle(decodeURIComponent(hs[1]),hs[2]); on="projets"; }
+      else if(r==="mails"){ html=await pageMails(); on="mails"; }
+      else if(r==="contacts"){ html=await pageContacts(); on="contacts"; }
+      else if(r==="verifier"){ html=await pageVerifier(); on="verifier"; }
+      else if(r==="documents"){ html=await pageDocuments(); on="documents"; }
+      else if(r==="journal"){ html=await pageJournal(); on="journal"; }
+      else if(r==="alerte"){ html=await pageAlerte(); on="alerte"; }
+      else { html=await pageAccueil(); }
+    }catch(e){ html='<div class="err">'+esc(e.message)+'</div><p><a href="#/">Retour au tableau de bord</a></p>'; }
+    $("#app").innerHTML=html;
+    document.querySelectorAll("#menu a").forEach(a=>a.classList.toggle("on",a.dataset.r===on));
+    api("/sante").then(x=>{ const b=$("#nb-verif"); b.textContent=x.a_verifier||""; b.hidden=!x.a_verifier; }).catch(()=>{});
+    window.scrollTo(0, silencieux===true ? y : 0);
+  }
+  window.addEventListener("hashchange",()=>route());
+  (async ()=>{
+    try{ REF=await api("/referentiel"); const m=await api("/moi"); MOI=m.auteur; $("#enseigne").textContent=REF.enseigne; document.title="Amont · "+REF.enseigne;
+      if(MOI.indexOf("@")>0 && !lireMoi()) $("#who").innerHTML="connecté · <b>"+esc(MOI)+"</b>";
+      else { $("#moi").value=lireMoi(); $("#liste-moi").innerHTML=(REF.utilisateurs||[]).map(u=>'<option value="'+esc(u)+'">').join(""); } }
+    catch(e){ $("#app").innerHTML='<div class="err">Le registre ne répond pas : '+esc(e.message)+'</div>'; return; }
+    route();
+  })();
+})();
+</script>
+</body>
+</html>

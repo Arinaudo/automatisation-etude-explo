@@ -1,0 +1,115 @@
+{
+  "id": "AIV-600",
+  "I_type_demande": "Nouveau raccordement HTB",
+  "II_demandeur": {
+    "societe": "Castignac",
+    "siren": "880034798",
+    "nom": "Rinaudo",
+    "prenom": "Alexis",
+    "fonction": "Leasing Manager",
+    "telephone": "0184258000",
+    "courriel": "rinaudo.alexis@gmail.com",
+    "mandataire": "Non"
+  },
+  "IV_site": {
+    "nom_site": "Campus AI-Valley extension",
+    "commune": "Haynecourt",
+    "departement": "59",
+    "latitude": "50.23610",
+    "longitude": "3.16080",
+    "date_mise_a_disposition": "30/09/2035"
+  },
+  "V_technique": {
+    "puissance_raccordement_mw": 600.0,
+    "raccordement_hta_existant": "Non",
+    "demande_hta_en_cours": "Non",
+    "alimentations_supplementaires": "0",
+    "puissance_court_circuit_min": "Non",
+    "puissance_mise_en_securite_mw": null
+  },
+  "VI_complements": "",
+  "VI_complements_techniques": "",
+  "pieces": {
+    "extrait_cadastral": "",
+    "plan_installation": ""
+  },
+  "controle_article_105": {
+    "domaine": "HTB3",
+    "detail": [
+      {
+        "domaine": "HTA",
+        "tensions": "20 kV",
+        "seuil_absolu_mw": 40,
+        "limite_distance_mw": 5.9,
+        "limite_effective_mw": 5.9,
+        "mordant": "distance"
+      },
+      {
+        "domaine": "HTB1",
+        "tensions": "63 / 90 kV",
+        "seuil_absolu_mw": 100,
+        "limite_distance_mw": 58.8,
+        "limite_effective_mw": 58.8,
+        "mordant": "distance"
+      },
+      {
+        "domaine": "HTB2",
+        "tensions": "150 / 225 kV",
+        "seuil_absolu_mw": 400,
+        "limite_distance_mw": 588.2,
+        "limite_effective_mw": 400,
+        "mordant": "seuil absolu"
+      }
+    ],
+    "plafond_domaine_inferieur": {
+      "domaine": "HTB2",
+      "puissance_max_mw": 400
+    }
+  },
+  "hypotheses_declarees": [
+    "600 MW",
+    "400 MW"
+  ],
+  "checklist_recevabilite": [
+    {
+      "ok": true,
+      "libelle": "Demandeur identifie, SIREN de 9 caracteres (valide en direct par RTE)"
+    },
+    {
+      "ok": true,
+      "libelle": "Nom et prenom de l'interlocuteur"
+    },
+    {
+      "ok": true,
+      "libelle": "Coordonnees de contact renseignees"
+    },
+    {
+      "ok": true,
+      "libelle": "Site et commune renseignes"
+    },
+    {
+      "ok": true,
+      "libelle": "Coordonnees du point de connexion renseignees"
+    },
+    {
+      "ok": true,
+      "libelle": "Puissance de raccordement renseignee"
+    },
+    {
+      "ok": true,
+      "libelle": "Date de mise a disposition souhaitee renseignee"
+    },
+    {
+      "ok": true,
+      "libelle": "Extrait cadastral joint, PDF de moins de 2 Mo (facultatif dans le formulaire, bloquant pour la recevabilite)"
+    },
+    {
+      "ok": true,
+      "libelle": "Mandat joint si depot en qualite de mandataire"
+    },
+    {
+      "ok": true,
+      "libelle": "Distance d renseignee pour le controle article 105"
+    }
+  ]
+}

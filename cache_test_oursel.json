@@ -1,0 +1,60 @@
+{
+  "lignes_aeriennes": [
+    {
+      "fields": {
+        "code_ligne_1": "ARGOEL71TERRI",
+        "nom_ligne_1": "ARGOEUVES - TERRIER n° 1 et n° 2",
+        "tension": "400 KV"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[2.05, 49.625], [2.12, 49.622], [2.18, 49.6205], [2.25, 49.618], [2.32, 49.615]]
+      }
+    },
+    {
+      "fields": {
+        "code_ligne_1": "BLOCAL42MOIML",
+        "nom_ligne_1": "BLOCAUX - MOIMONT",
+        "tension": "225 KV"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[2.02, 49.52], [2.10, 49.53], [2.20, 49.54], [2.30, 49.55]]
+      }
+    },
+    {
+      "fields": {
+        "code_ligne_1": "BRETEL41CREVE",
+        "nom_ligne_1": "BRETEUIL - CREVECOEUR",
+        "tension": "90 KV"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [[2.10, 49.63], [2.16, 49.615], [2.22, 49.60], [2.28, 49.585]]
+      }
+    }
+  ],
+  "lignes_souterraines": [],
+  "postes": [
+    {
+      "fields": {
+        "nom_poste": "BRETEUIL",
+        "tension": "90 KV"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.30, 49.63]
+      }
+    },
+    {
+      "fields": {
+        "nom_poste": "ARGOEUVES",
+        "tension": "400 KV"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.25, 49.88]
+      }
+    }
+  ]
+}

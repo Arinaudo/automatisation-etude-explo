@@ -1,0 +1,315 @@
+{
+  "_lisez_moi": "Mapping COMPLET du formulaire D1 dematerialise du Portail Services RTE, releve en direct le 04/09/2026 en parcourant les 5 etapes jusqu'a l'ecran de validation. Application Angular Material : les identifiants (mat-input-N, mat-radio-N...) sont GENERES POSITIONNELLEMENT et se decalent selon la branche. Cibler par LIBELLE de question, jamais par identifiant.",
+  "url_formulaire": "https://www.services-rte.com/fr/realiser-une-demande-detude-exploratoire.html",
+  "technologie": "Angular Material, accordeon en 5 etapes, revelation progressive des champs a chaque reponse",
+  "strategie": "label",
+  "navigation": {
+    "suivant": "Suivant",
+    "precedent": "Precedent"
+  },
+  "arret_du_robot": {
+    "ecran": "5 VALIDATION",
+    "texte_certification": "En envoyant ce formulaire, je certifie detenir le droit de demander une etude exploratoire pour le raccordement d'une nouvelle installation ou l'ajout ou la modification d'une installation existante sur le reseau HTB.",
+    "verrou": "mat-slide-toggle de certification, laisse NON ACTIVE par le robot",
+    "consequence": "Tant que l'interrupteur de certification n'est pas active, le bouton d'envoi reste desactive. Le robot s'arrete avant l'interrupteur : l'humain certifie, puis envoie. Deux gestes humains, pas un."
+  },
+  "contraintes_techniques": {
+    "saisie_texte": "Affecter la propriete value + evenement input ne suffit pas sur les champs a traitement asynchrone. Utiliser de vraies frappes clavier (Playwright type(), jamais fill()) pour la commune. Ne jamais tenter de saisir la date au clavier, son champ est en lecture seule.",
+    "commune": "Autocompletion asynchrone. Apres la frappe, attendre 2 a 3 s que la liste Code INSEE se peuple.",
+    "date": "Le champ porte readonly=true : AUCUNE saisie clavier n'est possible, la valeur ne peut venir que du calendrier. Le declencheur n'est pas un mat-datepicker-toggle mais un composant maison <cortex-datepicker-icon>. Parcours verifie : clic sur l'icone, clic sur button.mat-calendar-period-button pour passer en vue multi-annees (24 annees par page, bouton .mat-calendar-next-button pour la page suivante), puis selection par aria-label sur button.mat-calendar-body-cell : '2035', puis 'septembre 2035', puis '30 septembre 2035'. L'aria-label est le seul ancrage fiable, le texte visible d'une cellule jour n'est que le numero, donc '5' correspondrait aussi a 15 et 25. Le champ porte aussi un attribut min cale sur le lendemain : une date passee est refusee. Apres selection le champ affiche un format long localise, du type 'dimanche, 30 septembre 2035'.",
+    "siren": "Valide en direct contre un registre. Un numero fictif est refuse. En cas de succes le nom de la societe s'affiche automatiquement.",
+    "nom_interlocuteur": "Passe en majuscules par le formulaire.",
+    "pieces_jointes": "Deux emplacements seulement, un par etape : extrait cadastral a l'etape 3, plan de l'installation a l'etape 4. UN SEUL PDF chacun, 2 Mo maximum. Les deux sont FACULTATIFS pour la navigation dans le formulaire, mais l'extrait cadastral reste bloquant pour la recevabilite sous 8 jours ouvres."
+  },
+  "etapes": [
+    {
+      "numero": 1,
+      "titre": "SOCIETE",
+      "champs": [
+        {
+          "label": "Etes-vous une societe francaise ?",
+          "type": "radio",
+          "options": [
+            "Oui",
+            "Non"
+          ],
+          "requis": true,
+          "defaut": "Oui",
+          "revele": "Numero de SIREN"
+        },
+        {
+          "label": "Numero de SIREN de la societe (9 caracteres)",
+          "type": "text",
+          "maxlength": 9,
+          "requis": true,
+          "source_payload": "II_demandeur.siren"
+        },
+        {
+          "label": "Vous disposez d'une boite aux lettres",
+          "type": "radio",
+          "options": [
+            "Generique",
+            "Nominative"
+          ],
+          "requis": true,
+          "defaut": "Nominative"
+        },
+        {
+          "label": "Nom de l'interlocuteur a contacter",
+          "type": "text",
+          "requis": true,
+          "source_payload": "II_demandeur.nom"
+        },
+        {
+          "label": "Prenom de l'interlocuteur a contacter",
+          "type": "text",
+          "requis": true,
+          "source_payload": "II_demandeur.prenom"
+        },
+        {
+          "label": "Fonction de l'interlocuteur a contacter",
+          "type": "text",
+          "requis": false,
+          "source_payload": "II_demandeur.fonction"
+        },
+        {
+          "label": "Telephone de contact",
+          "type": "text",
+          "maxlength": 16,
+          "requis": true,
+          "source_payload": "II_demandeur.telephone"
+        },
+        {
+          "label": "Adresse mail de contact",
+          "type": "text",
+          "requis": true,
+          "source_payload": "II_demandeur.courriel"
+        },
+        {
+          "label": "Etes-vous mandataire pour le compte d'une autre societe ?",
+          "type": "radio",
+          "options": [
+            "Oui",
+            "Non"
+          ],
+          "requis": true,
+          "defaut": "Non",
+          "note": "Oui revele le bloc de la societe mandante et rend le mandat necessaire"
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "titre": "DEMANDE",
+      "champs": [
+        {
+          "label": "Type de demande",
+          "type": "radio",
+          "requis": true,
+          "source_payload": "I_type_demande",
+          "defaut": "Nouveau raccordement HTB",
+          "options": [
+            "Nouveau raccordement HTB",
+            "Modification d'installation deja raccordee en HTB"
+          ]
+        },
+        {
+          "label": "L'installation a raccorder est une installation de",
+          "type": "checkbox_multiple",
+          "requis": true,
+          "defaut": [
+            "Consommation"
+          ],
+          "options": [
+            "Consommation",
+            "Production",
+            "Stockage",
+            "Autre"
+          ],
+          "note": "Cases a cocher cumulables. Un datacenter avec groupes de secours ou batteries peut relever de plusieurs natures."
+        },
+        {
+          "label": "Quel est le secteur d'activite de votre projet ?",
+          "type": "select",
+          "requis": true,
+          "defaut": "Datacenter",
+          "options": [
+            "Agriculture et industries agro-alimentaires",
+            "Automobiles et autres transports terrestres",
+            "Autres industries",
+            "Chimie et parachimie",
+            "Datacenter",
+            "Ecarburant",
+            "Energie et Combustibles mineraux solides",
+            "Ferroviaire",
+            "Hydrogene",
+            "Metallurgie et Mecanique (hors automobiles)",
+            "Mineraux et materiaux",
+            "Papier Carton",
+            "Siderurgie",
+            "Tertiaire",
+            "Transport non ferroviaire et Telecommunications"
+          ]
+        },
+        {
+          "label": "Commentaires relatifs a votre demande",
+          "type": "textarea",
+          "maxlength": 500,
+          "requis": false,
+          "source_payload": "VI_complements",
+          "note": "500 caracteres. La note de contexte d'une page n'y rentre pas."
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "titre": "INSTALLATION",
+      "champs": [
+        {
+          "label": "Nom de l'installation",
+          "type": "text",
+          "requis": true,
+          "source_payload": "IV_site.nom_site"
+        },
+        {
+          "label": "Nom de la commune du point de raccordement",
+          "type": "autocomplete",
+          "requis": true,
+          "source_payload": "IV_site.commune"
+        },
+        {
+          "label": "Code INSEE du point de raccordement",
+          "type": "select",
+          "requis": true,
+          "auto": "peuple par la commune, format '59294 - Haynecourt', prendre la premiere option"
+        },
+        {
+          "label": "Latitude",
+          "type": "text",
+          "requis": true,
+          "source_payload": "IV_site.latitude",
+          "format": "decimal, ex. 48.89329"
+        },
+        {
+          "label": "Longitude",
+          "type": "text",
+          "requis": true,
+          "source_payload": "IV_site.longitude",
+          "format": "decimal, ex. 2.23627"
+        },
+        {
+          "label": "Date souhaitee de mise a disposition du raccordement",
+          "type": "datepicker",
+          "requis": true,
+          "source_payload": "IV_site.date_mise_a_disposition",
+          "note": "Champ en lecture seule, selection par le calendrier uniquement",
+          "readonly": true,
+          "declencheur": "cortex-datepicker-icon",
+          "selection": "aria-label des button.mat-calendar-body-cell"
+        },
+        {
+          "label": "Telechargement de l'extrait cadastral",
+          "type": "file",
+          "accept": ".pdf",
+          "multiple": false,
+          "taille_max_mo": 2,
+          "requis": false,
+          "source_payload": "pieces.extrait_cadastral",
+          "note": "Facultatif pour avancer dans le formulaire, mais son absence fait tomber la recevabilite sous 8 jours ouvres."
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "titre": "DONNEES TECHNIQUES",
+      "champs": [
+        {
+          "label": "Avez-vous un raccordement existant en HTA ?",
+          "type": "radio",
+          "options": [
+            "Oui",
+            "Non"
+          ],
+          "requis": true,
+          "source_payload": "V_technique.raccordement_hta_existant"
+        },
+        {
+          "label": "Avez-vous formule une demande de raccordement en HTA ?",
+          "type": "radio",
+          "options": [
+            "Oui",
+            "Non"
+          ],
+          "requis": true,
+          "source_payload": "V_technique.demande_hta_en_cours"
+        },
+        {
+          "label": "Puissance de raccordement souhaitee pour l'ensemble du site en MW",
+          "type": "text",
+          "requis": true,
+          "source_payload": "V_technique.puissance_raccordement_mw"
+        },
+        {
+          "label": "Combien d'alimentations HTB supplementaires souhaitez-vous ?",
+          "type": "radio",
+          "options": [
+            "0",
+            "1",
+            "2"
+          ],
+          "requis": true,
+          "source_payload": "V_technique.alimentations_supplementaires",
+          "note": "C'est le champ qui fait basculer le taux de contribution de 70 a 85 pour cent. Une alimentation de secours se paie."
+        },
+        {
+          "label": "Avez-vous besoin d'un niveau minimal de puissance de court-circuit (Scc min) ?",
+          "type": "radio",
+          "options": [
+            "Oui",
+            "Non"
+          ],
+          "requis": true,
+          "source_payload": "V_technique.puissance_court_circuit_min"
+        },
+        {
+          "label": "Puissance minimale de mise en securite en MW",
+          "type": "text",
+          "requis": false,
+          "source_payload": "V_technique.puissance_mise_en_securite_mw",
+          "note": "RTE peut demander des justifications sur cette valeur."
+        },
+        {
+          "label": "Elements complementaires relatifs a l'installation et au niveau de disponibilite souhaite du point de connexion",
+          "type": "textarea",
+          "maxlength": 1000,
+          "requis": false,
+          "source_payload": "VI_complements_techniques",
+          "note": "1000 caracteres. C'est ici que se placent les quatre questions a poser a RTE : contraintes de transit, renforcements amont, compensation de reactif, limitations temporaires."
+        },
+        {
+          "label": "Telechargement du plan de l'installation",
+          "type": "file",
+          "accept": ".pdf",
+          "multiple": false,
+          "taille_max_mo": 2,
+          "requis": false,
+          "source_payload": "pieces.plan_installation",
+          "note": "Deuxieme et dernier emplacement de piece jointe. Y fusionner plan de situation, plan d'implantation et schema unifilaire."
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "titre": "VALIDATION",
+      "champs": [
+        {
+          "label": "Certification du droit a demander une etude exploratoire",
+          "type": "slide_toggle",
+          "requis": true,
+          "action_robot": "NE PAS TOUCHER",
+          "note": "Tant qu'il n'est pas active, le bouton d'envoi reste desactive."
+        }
+      ]
+    }
+  ]
+}

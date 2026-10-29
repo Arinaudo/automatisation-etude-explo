@@ -1,0 +1,47 @@
+{
+  "_commentaire": "Coefficients recalibres le 27/07/2026 sur 6 solutions de raccordement issues de 4 etudes exploratoires RTE reelles (Oursel-Maison 26-2818, Angouleme 26-4883, Haynecourt 23-1496, Fortum 24-1410). Les couts au km sont des couts variables : le terme fixe (cellule + raccordement au poste) porte l'essentiel du cout sur les liaisons courtes.",
+  "rayon_recherche_km": 30,
+  "coefficient_sinuosite": 1.25,
+  "type_liaison_defaut": "km_liaison_souterraine",
+  "couts_unitaires_keur": {
+    "HTB3": {
+      "cellule_ligne": 5000,
+      "genie_civil_poste": 8000,
+      "km_liaison_aerienne_double_terne": 3000,
+      "km_liaison_souterraine": 9000
+    },
+    "HTB2": {
+      "cellule_ligne": 3000,
+      "genie_civil_poste": 12000,
+      "km_liaison_aerienne_double_terne": 900,
+      "km_liaison_souterraine": 1500
+    },
+    "HTB1": {
+      "cellule_ligne": 1200,
+      "genie_civil_poste": 6000,
+      "km_liaison_aerienne_double_terne": 700,
+      "km_liaison_souterraine": 1350
+    }
+  },
+  "cout_fixe_raccordement_poste_keur": {
+    "HTB3": 3000,
+    "HTB2": 3000,
+    "HTB1": 3000
+  },
+  "nb_cellules_defaut": {
+    "double_coupure": 6,
+    "simple_coupure": 4,
+    "antenne_poste_existant": 1
+  },
+  "taux_contribution_client": 0.70,
+  "_note_contribution": "70 % sur l'alimentation principale, 100 % sur les travaux supplementaires demandes par le client. Observe : 70 % sans secours (Angouleme, Fortum, Haynecourt coupure), 85 % avec alimentation de secours ou double antenne (Oursel-Maison, Haynecourt double antenne). Utiliser 0.85 si le client demande une alimentation de secours.",
+  "delai_raccordement_mois": {
+    "HTB3": 120,
+    "HTB2": 60,
+    "HTB1": 60
+  },
+  "_note_delai": "Observe : 59 a 61 mois sur tous les cas HTB1 et HTB2 (dont ~30 a 36 mois de procedures administratives et etudes). Les 120 mois d'Oursel-Maison correspondent a un cas avec creation d'un poste 400 kV et renforcements lourds : ce n'est pas la tension qui pilote le delai mais la consistance des travaux.",
+  "seuil_raccordement_poste_km": 3.0,
+  "montant_forfaitaire_ptf_eur": 42000,
+  "conditions_economiques_annee": 2026
+}

@@ -1,0 +1,29 @@
+# Amont sur le home server. Acces prive uniquement : aucun tunnel Cloudflare.
+# Reseau de l'hote : Amont ecoute sur 127.0.0.1:8010 (Caddy, lui aussi en reseau hote, le proxifie)
+# et joint Ollama sur 127.0.0.1:11434 sans que celui-ci soit expose ailleurs.
+services:
+  amont:
+    build: .
+    image: amont:0.9.1
+    container_name: amont
+    restart: unless-stopped
+    network_mode: host
+    command: ["uvicorn", "amont_core.api:app", "--host", "127.0.0.1", "--port", "8010", "--proxy-headers"]
+    environment:
+      AMONT_URL: "https://amont.arinaudo.fr"
+      AMONT_ENSEIGNE: "Castignac"
+      AMONT_DB: "/app/donnees/amont.sqlite"
+      AMONT_FICHIERS: "/app/donnees/raccordement"
+      AMONT_SOURCES: "/app/donnees/sources"
+      AMONT_CONFIG: "/app/amont_config.json"
+      # IA locale (Ollama de la VM). Sur le serveur interne a RTX 5090 : changer l'URL et les modeles,
+      # ou AMONT_IA_API: "openai" si le modele y est servi par vLLM.
+      AMONT_IA_API: "ollama"
+      AMONT_IA_URL: "http://127.0.0.1:11434"
+      AMONT_IA_MODELE: "qwen3:8b"
+      AMONT_IA_MODELE_VISION: "gemma3:12b"
+      AMONT_IA_CONTEXTE: "16384"
+      AMONT_IA_DELAI: "900"
+    volumes:
+      - ./donnees:/app/donnees
+      - ./amont_config.json:/app/amont_config.json:ro

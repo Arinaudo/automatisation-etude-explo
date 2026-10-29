@@ -1,0 +1,21 @@
+{
+  "source": "C:\\Castignac\\Codes castignac(archive nicolas)\\datacenter\\Presentations_generees\\Exincourt_2026-09-23_16h20\\2026-09-23_analysis_Exincourt_fr_interne.pptx",
+  "language": "fr",
+  "analyses": {
+    "3": {
+      "titre": "Localisation & Avantages",
+      "contenu": "• Ville : 25400 Exincourt\n• Région : Bourgogne-Franche-Comté\n• Autoroute : A36\n• Route nationale : Non identifiée"
+    },
+    "13": {
+      "titre": "Environnement Électrique (OpenInfraMap)",
+      "contenu": "Postes source RTE (gestionnaire du réseau de transport d'électricité) — transport haute tension\n• Poste source RTE ≥ 225 kV : PE (poste électrique) d’Étupes (225 kV) à 1.56 km — direction E\n• Poste source RTE le plus proche : RTE (63 kV) à 0.66 km\n• Capacité brute maximale : ~500 MW\nsomme des 5 postes RTE dans 5 km :\n– PE d’Étupes (225 kV ~300 MW) à 1.6 km\n– RTE (63 kV ~50 MW) à 0.7 km\n– RTE (63 kV ~50 MW) à 1.2 km\n– RTE (63 kV ~50 MW) à 3.4 km\n– RTE (63 kV ~50 MW) à 4.8 km",
+      "source": "osm-overpass"
+    },
+    "18": {
+      "titre": "Réutilisation de Chaleur",
+      "contenu": "▸ Réseau existant le plus proche\n▪ Reseau existant : Réseau de Montbéliard — Montbéliard Energies (DALKIA) a 0.90 km au O\n▪ Mix énergétique : 45 % d'énergies fossiles · 55 % renouvelable & récupération\n▸ Projets en développement\n▪ Projet en developpement : Projet de reseau — Montbéliard Energies (DALKIA) a 1.75 km au O\n▸ Raccordement au réseau (indicatif)\n▪ Coût de raccordement estimé : 637 k€–1.12 M€ (médiane 881 k€, canalisation ~1532 mètres linéaires)\n▪ Coût estimé pour votre entreprise après aides Fonds Chaleur ~50 % : ~440 k€ (indicatif, hors pompe à chaleur/poste — devis requis)",
+      "source": "pptx-chart-extract"
+    }
+  },
+  "synthesis": null
+}
