@@ -1323,6 +1323,18 @@ class Registre:
             c = self.contact_par_email((adresse or "").strip())
             contact_id = c["id"] if c else None
         attend = bool(e.get("attend_reponse")) if "attend_reponse" in e else sens == "envoye"
+        repondu = None
+        if attend and sens == "envoye":
+            # depot dans le desordre (releve de boite mail, .eml deposes apres coup) : une reponse deja enregistree,
+            # posterieure a ce message, le cloture d'emblee
+            if e.get("demande_id"):
+                deja = self.cx.execute("SELECT MIN(date) AS d FROM echanges WHERE demande_id = ? AND sens = 'recu' AND date > ?",
+                                       (e["demande_id"], date_e)).fetchone()
+            else:
+                deja = self.cx.execute("SELECT MIN(date) AS d FROM echanges WHERE projet_code = ? AND demande_id IS NULL"
+                                       " AND sens = 'recu' AND date > ?", (projet, date_e)).fetchone()
+            if deja and deja["d"]:
+                attend, repondu = False, deja["d"]
         cur = self.cx.execute(
             "INSERT INTO echanges (projet_code, demande_id, contact_id, date, sens, canal, expediteur, destinataires, objet, resume,"
             " attend_reponse, relance_le, fichier, nom_fichier, message_id, origine, cree_le, cree_par) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -1331,6 +1343,8 @@ class Registre:
              1 if attend and sens == "envoye" else 0, e.get("relance_le") or None, e.get("fichier"), e.get("nom_fichier"),
              e.get("message_id") or None, origine, maintenant(), auteur or "interne"))
         nouvel = cur.lastrowid
+        if repondu:
+            self.cx.execute("UPDATE echanges SET repondu_le = ? WHERE id = ?", (repondu, nouvel))
         if sens == "recu" and e.get("clore_attente", True):
             if e.get("demande_id"):
                 self.cx.execute("UPDATE echanges SET attend_reponse = 0, repondu_le = ? WHERE demande_id = ? AND attend_reponse = 1 AND date <= ?",
