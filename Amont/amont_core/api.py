@@ -20,7 +20,7 @@ from fastapi import BackgroundTasks, FastAPI, File, Form, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-from . import VERSION, alertes, cadastre, courriels, d1, d2, enedis, extraction, ia, redaction, regles, reponses
+from . import VERSION, alertes, cadastre, courriels, d1, d2, enedis, extraction, grdf, ia, redaction, regles, reponses
 from . import ressources as ressources_defaut
 from . import fiche as fiche_site
 from .stockage import Registre
@@ -518,6 +518,31 @@ def _preparer_site(tache: dict, code: str, qui: str) -> None:
         return ("fait" if any("générée" in f for f in faits) else "deja"), " ; ".join(faits)
     etape("Fiche D2 (RTE PTF)", fiche_d2)
 
+    def fiche_grdf():
+        if "grdf" in so:
+            return "ignore", "GRDF marquée sans objet pour ce site"
+        gaz = registre.lister_demandes(projet=code, filiere="grdf")
+        faits = []
+        if not gaz:
+            cree = registre.preparer_demandes(code, ["grdf"], qui)
+            gaz = cree
+            faits.append(f"{cree[0]['id']} créée, pré-remplie depuis la fiche")
+        from datetime import date as _date
+        for d in gaz:
+            if any(p["type"] == "fiche_grdf" for p in registre.lister_pieces(d["id"])):
+                faits.append(f"{d['id']} : fiche GRDF déjà jointe")
+                continue
+            if d["statut"] not in regles.ETAPES_AVANT_ENVOI:
+                faits.append(f"{d['id']} : déjà partie")
+                continue
+            x = _donnees_grdf(d)
+            nom = f"{_date.today().strftime('%Y_%m_%d')}_fiche_GRDF_{code}.pdf"
+            _joindre(d["id"], "fiche_grdf", nom, grdf.remplir(x), qui)
+            manque = grdf.manquants(x)
+            faits.append(f"{d['id']} : fiche GRDF générée" + (f", à compléter : {', '.join(manque)}" if manque else ", complète"))
+        return ("fait" if any("générée" in f or "créée" in f for f in faits) else "deja"), " ; ".join(faits)
+    etape("Fiche GRDF Grands Projets", fiche_grdf)
+
     def bilan():
         lignes = []
         site = registre.obtenir_site(code)
@@ -713,36 +738,124 @@ def generer_d2(id_: str, req: Request):
     return {"piece": piece, "manquants": manque, "taille_octets": len(contenu)}
 
 
+def _contacts_en_copie(d: dict, organisation: str, deja: list[str]) -> list[str]:
+    """Adresses des contacts de l'organisation deja en echange sur le projet, sans doublon."""
+    cc: list[str] = []
+    for e in registre.lister_echanges(projet=d["projet_code"], limite=200):
+        c = registre.obtenir_contact(e["contact_id"]) if e.get("contact_id") else None
+        if c and c.get("email") and organisation in (c.get("organisation") or "").lower() and c["email"] not in deja + cc:
+            cc.append(c["email"])
+    return cc
+
+
 def _message_ptf(d: dict) -> dict:
     v = registre.valeurs_fiche(d["projet_code"])
     a = list(regles.CONFIG.get("rte_ptf_destinataires") or [d2.DESTINATAIRE_RTE])
-    cc = []
-    for e in registre.lister_echanges(projet=d["projet_code"], limite=200):
-        c = registre.obtenir_contact(e["contact_id"]) if e.get("contact_id") else None
-        if c and c.get("email") and "rte" in (c.get("organisation") or "").lower() and c["email"] not in a + cc:
-            cc.append(c["email"])
+    cc = _contacts_en_copie(d, "rte", a)
     return d2.courriel(v, d, _num_etude(d), registre.lister_pieces(d["id"]), a, cc)
+
+
+def _demande_courriel(id_: str) -> dict:
+    d = registre.obtenir_demande(id_)
+    if not d:
+        raise KeyError(id_)
+    if d["filiere"] not in ("rte_ptf", "grdf"):
+        raise ValueError("le courriel d'envoi concerne les demandes RTE PTF et GRDF")
+    return d
+
+
+def _message_envoi(d: dict) -> dict:
+    return _message_grdf(d) if d["filiere"] == "grdf" else _message_ptf(d)
 
 
 @app.get("/api/demandes/{id_}/courriel")
 def courriel_ptf(id_: str):
-    """Brouillon du courriel d'envoi de la D2 : destinataires, objet, corps, pieces retenues, alertes."""
-    return _message_ptf(_demande_ptf(id_))
+    """Brouillon du courriel d'envoi (D2 RTE ou fiche GRDF) : destinataires, objet, corps, pieces retenues, alertes."""
+    return _message_envoi(_demande_courriel(id_))
 
 
 @app.get("/api/demandes/{id_}/courriel.eml")
 def courriel_ptf_eml(id_: str):
     """Le meme brouillon en .eml avec les pieces jointes : a ouvrir dans Outlook, relire, envoyer."""
-    d = _demande_ptf(id_)
-    m = _message_ptf(d)
+    d = _demande_courriel(id_)
+    m = _message_envoi(d)
     v = registre.valeurs_fiche(d["projet_code"])
     fichiers = [(p["nom_fichier"], (DOSSIER_FICHIERS / p["chemin"]).read_bytes()) for p in m["pieces"]]
     nom_exp = " ".join(x for x in (v.get("interlocuteur_prenom"), v.get("interlocuteur_nom")) if x)
     contenu = d2.eml(m, str(v.get("interlocuteur_mail") or ""), nom_exp, fichiers)
     from datetime import date as _date
-    nom = f"{_date.today().strftime('%Y_%m_%d')}_courriel_PTF_{d['projet_code']}.eml"
+    nom = f"{_date.today().strftime('%Y_%m_%d')}_courriel_{'GRDF' if d['filiere'] == 'grdf' else 'PTF'}_{d['projet_code']}.eml"
     return StreamingResponse(io.BytesIO(contenu), media_type="message/rfc822",
                              headers={"Content-Disposition": f'attachment; filename="{nom}"'})
+
+
+# ------------------------------------------------- GRDF : fiche de renseignements Grands Projets
+PIECES_PARTAGEES_GAZ = ("plan_situation", "extrait_cadastral", "kbis", "plan_200", "plan_2000", "certificat_adressage")
+
+
+def _demande_grdf(id_: str) -> dict:
+    d = registre.obtenir_demande(id_)
+    if not d:
+        raise KeyError(id_)
+    if d["filiere"] != "grdf":
+        raise ValueError("la fiche Grands Projets concerne les demandes GRDF")
+    return d
+
+
+def _pieces_gaz(d: dict) -> list[dict]:
+    """Pieces de la demande GRDF, completees par celles des autres demandes du site (plan de situation, cadastre, Kbis...)
+    qui servent aussi a GRDF : elles sont deja rangees avec l'etude exploratoire RTE."""
+    pieces = registre.lister_pieces(d["id"])
+    presents = {p["type"] for p in pieces}
+    for autre in registre.lister_demandes(projet=d["projet_code"]):
+        if autre["id"] == d["id"]:
+            continue
+        for p in registre.lister_pieces(autre["id"]):
+            if p["type"] in PIECES_PARTAGEES_GAZ and p["type"] not in presents:
+                pieces.append(p)
+                presents.add(p["type"])
+    return pieces
+
+
+def _donnees_grdf(d: dict) -> dict:
+    return grdf.donnees(registre.valeurs_fiche(d["projet_code"]), d, _pieces_gaz(d), d["projet_code"])
+
+
+@app.get("/api/demandes/{id_}/grdf")
+def apercu_grdf(id_: str):
+    """Ce que la fiche GRDF contiendra, ses cases encore vides et les points a verifier."""
+    d = _demande_grdf(id_)
+    x = _donnees_grdf(d)
+    return {"manquants": grdf.manquants(x), "alertes": grdf.alertes_fiche(x),
+            "pieces_fiche": [p for p in registre.lister_pieces(id_) if p["type"] == "fiche_grdf"],
+            "puissance_max_mw": x["puissance_max_mw"], "pression": x["_pression"], "annees": x["_annees"]}
+
+
+@app.post("/api/demandes/{id_}/grdf", status_code=201)
+def generer_grdf(id_: str, req: Request):
+    """Remplit la fiche GRDF (PDF) depuis la fiche du site et la joint a la demande (type fiche_grdf). Les champs requis
+    vides sortent « à compléter », et un point a verifier les liste."""
+    from datetime import date as _date
+    d = _demande_grdf(id_)
+    qui = auteur(req)
+    x = _donnees_grdf(d)
+    contenu = grdf.remplir(x)
+    nom = f"{_date.today().strftime('%Y_%m_%d')}_fiche_GRDF_{d['projet_code']}.pdf"
+    piece = _joindre(id_, "fiche_grdf", nom, contenu, qui)
+    manque = grdf.manquants(x)
+    texte = (f"Fiche GRDF générée ({piece['nom_fichier']}) : relire, la signer (page 2, nom, date, signature, cachet), puis déposer "
+             "le PDF signé (type fiche grdf, nom contenant « signee »)."
+             + (" Champs à compléter : " + ", ".join(manque) + "." if manque else "")
+             + ((" À vérifier : " + " ; ".join(grdf.alertes_fiche(x)) + ".") if grdf.alertes_fiche(x) else ""))
+    registre.ajouter_commentaire({"projet_code": d["projet_code"], "demande_id": id_, "a_verifier": True, "texte": texte}, qui)
+    return {"piece": piece, "manquants": manque, "taille_octets": len(contenu)}
+
+
+def _message_grdf(d: dict) -> dict:
+    v = registre.valeurs_fiche(d["projet_code"])
+    a = list(regles.CONFIG.get("grdf_destinataires") or [grdf.DESTINATAIRE_GRDF])
+    cc = _contacts_en_copie(d, "grdf", a)
+    return grdf.courriel(v, d, _pieces_gaz(d), a, cc)
 
 
 # ------------------------------------------------- robots lances depuis le site

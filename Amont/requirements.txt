@@ -5,5 +5,5 @@ openpyxl>=3.1
 pdfplumber>=0.10
 python-docx>=1.1
 python-pptx>=0.6
-pypdf>=4.0
+pypdf>=6.17
 # L'IA locale (Ollama, vLLM) ne demande aucun paquet : voir amont_core/ia.py

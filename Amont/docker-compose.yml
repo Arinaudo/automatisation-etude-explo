@@ -4,7 +4,7 @@
 services:
   amont:
     build: .
-    image: amont:0.9.1
+    image: amont:0.10.0
     container_name: amont
     restart: unless-stopped
     network_mode: host

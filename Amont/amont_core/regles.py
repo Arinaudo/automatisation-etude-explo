@@ -66,9 +66,10 @@ FILIERES: dict[str, dict] = {
         "court": "GRDF",
         "dimension": "Nm³/h",
         "etapes": [
-            ("brouillon", "Dossier en préparation", "Adresse, débit, usage"),
-            ("pret_validation", "Prêt pour envoi", "Formulaire pré-rempli, clic humain"),
-            ("depose", "Déposé", "Devis sous 8 j. ouvrés, 1 mois si étude"),
+            ("brouillon", "Fiche en préparation", "Fiche Grands Projets : site, gaz, plans"),
+            ("pret_validation", "Prêt pour envoi", "Fiche et courriel préparés, envoi humain"),
+            ("depose", "Envoyée", "Réponse de GRDF, ou redirection vers NaTran"),
+            ("redirige_natran", "Redirigé vers NaTran", "NaTran prend le relais"),
             ("devis_recu", "Devis reçu", "Signature en ligne"),
             ("accepte", "Accepté", "Acompte, planification"),
             ("travaux", "Travaux", "10 j. ouvrés à 2 mois"),
@@ -115,13 +116,13 @@ PIECES_OBLIGATOIRES_POUR_DEPOT: dict[str, list[str]] = {
     "rte_ee": ["extrait_cadastral"],
     "rte_ptf": ["fiche_d2", "unifilaire", "preuve_virement"],
     "enedis": ["extrait_cadastral", "plan_masse"],
-    "grdf": [],
+    "grdf": ["fiche_grdf"],
     "natran": [],
 }
 
 TYPES_PIECES = [
     "extrait_cadastral", "plan_situation", "plan_implantation", "plan_installation", "unifilaire", "permis", "preuve_virement",
-    "fiche_d2", "annexe_cartes", "planning", "montee_en_charge", "mandat", "plan_masse", "photo_environnement",
+    "fiche_d2", "fiche_grdf", "kbis", "plan_200", "plan_2000", "certificat_adressage", "annexe_cartes", "planning", "montee_en_charge", "mandat", "plan_masse", "photo_environnement",
     "etude_recue", "ptf", "pdr", "devis", "convention", "rapport_faisabilite", "autre",
 ]
 
@@ -340,12 +341,9 @@ def echeances(d: dict, aujourdhui: date | None = None) -> list[dict]:
     elif f == "grdf":
         devis, acc = g("date_devis_recu"), g("date_devis_accepte")
         if depot:
-            if d.get("etude_requise"):
-                push("Devis GRDF, environ 1 mois avec étude", ajouter_mois(depot, 1), devis)
-            else:
-                push("Devis GRDF, 8 jours ouvrés annoncés", ajouter_jours_ouvres(depot, 8), devis)
-            if not devis:
-                push("Relance du conseiller GRDF sans devis", ajouter_jours(depot, 15), g("date_relance"))
+            # Grands Projets : aucun delai de reponse publie, on ne calcule que la relance
+            if not devis and d.get("statut") != "redirige_natran":
+                push("Relance de GRDF Grands Projets sans réponse", ajouter_jours(depot, 15), g("date_relance"))
         if devis:
             push("Fin de validité du devis, 3 mois (à confirmer sur l'offre)", ajouter_mois(devis, 3), acc)
         travaux = g("date_travaux_prevue")
@@ -398,7 +396,7 @@ def alertes(d: dict, aujourdhui: date | None = None) -> list[dict]:
         elif n == 1:
             out.append({"severite": "warn", "texte": "Un versement forfaitaire déjà utilisé, il n'en reste qu'un", "cle": "versements"})
     if f == "grdf" and _nombre(d.get("debit_nm3h")) > 650:
-        out.append({"severite": "warn", "texte": "Débit au-delà des classes standard GRDF, vérifier avec le conseiller s'il faut passer par NaTran (ex-GRTgaz)", "cle": "grtgaz"})
+        out.append({"severite": "info", "texte": "Débit au-delà des classes standard GRDF : la fiche GRDF reste la première démarche, GRDF redirige ensuite vers NaTran (ex-GRTgaz)", "cle": "grtgaz"})
     return out
 
 
@@ -442,9 +440,10 @@ ACTIONS: dict[str, dict[str, str]] = {
         "mise_en_service": "",
     },
     "grdf": {
-        "brouillon": "Remplir le formulaire GRDF",
-        "pret_validation": "Relire et envoyer le formulaire",
-        "depose": "Attendre le devis GRDF",
+        "brouillon": "Générer la fiche GRDF et préparer le courriel",
+        "pret_validation": "Relire, signer la fiche puis envoyer le courriel à GRDF",
+        "depose": "Attendre la réponse de GRDF ou sa redirection vers NaTran",
+        "redirige_natran": "Ouvrir la demande NaTran avec la réponse de GRDF",
         "devis_recu": "Signer le devis avant expiration",
         "accepte": "Planifier les travaux avec GRDF",
         "travaux": "Suivre les travaux",

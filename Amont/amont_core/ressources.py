@@ -56,9 +56,11 @@ DEFAUT: list[tuple[str, str, str, str, str, str, str]] = [
     ("enedis", "", "formulaire", "Enedis : Connect Racco, raccordement HTA définitif", "https://connect-racco.enedis.fr/",
      "Compte requis. Pour un site de moins de 40 MW raccordé en HTA.", "2026-09-10"),
     # --- GRDF
-    ("grdf", "brouillon", "formulaire", "GRDF : demande de raccordement entreprise",
+    ("grdf", "brouillon", "formulaire", "GRDF : fiche de renseignements Grands Projets (modèle)",
+     "", "PDF à champs, générée par Amont, à envoyer par courriel à l'interlocuteur Grands Projets de GRDF. Toujours la première démarche gaz, même sans réseau à proximité ou au-delà des limites de GRDF ; GRDF redirige ensuite vers NaTran.", "2026-10-29"),
+    ("grdf", "brouillon", "formulaire", "GRDF : demande de raccordement entreprise (formulaire public)",
      "https://monespace.grdf.fr/demande-raccordement-reseau-gaz/entreprise",
-     "Formulaire public sans compte, commence par l'adresse.", "2026-09-10"),
+     "Formulaire public sans compte, pour les petits raccordements : non utilisé pour les datacenters.", "2026-09-10"),
     # --- NaTran
     ("natran", "", "envoi", "NaTran (ex-GRTgaz) : site et contacts commerciaux", "https://www.natrangroupe.com/",
      "Pas de portail : demande à l'interlocuteur commercial.", ""),
