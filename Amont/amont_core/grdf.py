@@ -30,7 +30,7 @@ LIGNES_PROFIL = 10  # le tableau « année 1 à 10 » de la fiche
 PIECES_COURRIEL = [
     ("fiche_grdf", "la fiche de renseignements Grands Projets, complétée et signée"),
     ("plan_situation", "le plan de situation avec l'emplacement du poste gaz"),
-    ("extrait_cadastral", "le plan cadastral des parcelles"),
+    ("plan_cadastral_1000", "le plan cadastral au 1/1000e, format portrait"),
     ("plan_200", "le plan au 1/200e"),
     ("plan_2000", "le plan au 1/2000e"),
     ("kbis", "l'extrait Kbis de la société"),
@@ -258,7 +258,7 @@ def donnees(v: dict, demande: dict, pieces: list[dict], code: str) -> dict:
         "suppression": SUPPRESSION_DEFAUT,
         # cases
         "neuf": True, "existant": False,
-        "piece_situation": "plan_situation" in types, "piece_cadastre": "extrait_cadastral" in types, "piece_kbis": "kbis" in types,
+        "piece_situation": "plan_situation" in types, "piece_cadastre": "plan_cadastral_1000" in types, "piece_kbis": "kbis" in types,
         "piece_200": "plan_200" in types, "piece_2000": "plan_2000" in types, "piece_adressage": "certificat_adressage" in types,
         "dest_rcu": False, "dest_datacenter": True, "dest_autres": False,
         "nrj_gaz": False, "nrj_elec": False, "nrj_rcu": False, "nrj_bois": False, "nrj_fioul": False, "nrj_autre": False,
@@ -472,8 +472,8 @@ def courriel(v: dict, demande: dict, pieces: list[dict], destinataires: list[str
         alertes.append("la fiche jointe est la version générée, non signée : déposer le PDF signé (type fiche grdf, nom contenant « signee »)")
     if not any(p["type"] == "plan_situation" for p in choisies):
         alertes.append("plan de situation avec l'emplacement du poste gaz absent")
-    if not any(p["type"] == "extrait_cadastral" for p in choisies):
-        alertes.append("plan cadastral absent : GRDF le veut en portrait au 1/1000e (cadastre.gouv.fr, « outils avancés »)")
+    if not any(p["type"] == "plan_cadastral_1000" for p in choisies):
+        alertes.append("plan cadastral au 1/1000e en portrait absent : le générer depuis le bloc GRDF (cadastre.gouv.fr)")
     if taille > d2.TAILLE_MAX_COURRIEL:
         alertes.append(f"pièces de {taille // (1024 * 1024)} Mo au total : au-delà de 15 Mo, envoyer par lien de transfert")
     return {"a": destinataires, "cc": copie or [], "objet": objet, "corps": "\n".join(corps), "pieces": choisies,

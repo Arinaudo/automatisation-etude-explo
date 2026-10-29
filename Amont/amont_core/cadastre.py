@@ -238,14 +238,16 @@ class Session:
 
 
 # --------------------------------------------------------------------------- mise en page
-def choisir_cadre(emprise: tuple, echelle_imposee: int | None = None, format_impose: str | None = None) -> tuple[int, str, str]:
+def choisir_cadre(emprise: tuple, echelle_imposee: int | None = None, format_impose: str | None = None,
+                  orientation_imposee: str | None = None) -> tuple[int, str, str]:
     """Plus grande echelle (plan le plus detaille) dont le cadre contient l'emprise et sa marge."""
     larg = emprise[2] - emprise[0]
     haut = emprise[3] - emprise[1]
     besoin_l = larg + 2 * max(larg * MARGE, MARGE_MIN_M)
     besoin_h = haut + 2 * max(haut * MARGE, MARGE_MIN_M)
     echelles = [echelle_imposee] if echelle_imposee else ECHELLES
-    formats = [f for f in ORDRE_FORMATS if not format_impose or f[0] == format_impose]
+    formats = [f for f in ORDRE_FORMATS if (not format_impose or f[0] == format_impose)
+               and (not orientation_imposee or f[1] == orientation_imposee)]
     for e in echelles:
         for fmt, ori in formats:
             w, h, b = CADRES[fmt][ori]
@@ -254,6 +256,8 @@ def choisir_cadre(emprise: tuple, echelle_imposee: int | None = None, format_imp
     fmt, ori = ("A3", "Paysage") if larg >= haut else ("A3", "Portrait")
     if format_impose:
         fmt = format_impose
+    if orientation_imposee:
+        ori = orientation_imposee
     return echelles[-1], fmt, ori
 
 
@@ -322,7 +326,8 @@ def _resoudre(parcelles: str, commune: str, departement: str | None, code_insee:
 
 def extrait_site(parcelles: str, commune: str, departement: str | None = None, code_insee: str | None = None,
                  communes_secondaires: str = "", centrer_sur: str | None = None, echelle: int | None = None,
-                 format_: str | None = None, nom_site: str = "", journal=print) -> Resultat:
+                 format_: str | None = None, nom_site: str = "", journal=print, orientation: str | None = None,
+                 prefixe_nom: str = "extrait_cadastral") -> Resultat:
     """Recupere l'extrait du plan cadastral couvrant les parcelles du site.
 
     parcelles : texte de la fiche (« AH 367, AH 368 » ou avec communes « Exincourt : AD 45 »).
@@ -348,7 +353,7 @@ def extrait_site(parcelles: str, commune: str, departement: str | None = None, c
         base = groupes[nom_commune]
         emprise = (min(p.emprise[0] for p in base), min(p.emprise[1] for p in base),
                    max(p.emprise[2] for p in base), max(p.emprise[3] for p in base))
-        e, fmt, ori = choisir_cadre(emprise, echelle, format_)
+        e, fmt, ori = choisir_cadre(emprise, echelle, format_, orientation)
         centre = ((emprise[0] + emprise[2]) / 2, (emprise[1] + emprise[3]) / 2)
         cadre = cadre_impression(centre, e, fmt, ori)
         # parcelle de reference du cartouche : la pastille la plus proche du centre, comme le site
@@ -373,7 +378,7 @@ def extrait_site(parcelles: str, commune: str, departement: str | None = None, c
         avert.append(f"aucune parcelle trouvée sur la commune principale ({commune}) : vérifier la commune du point de raccordement")
     cle = _sans_accents(nom_site or commune).replace(" ", "_")
     cle = re.sub(r"[^A-Za-z0-9_\-]", "", cle)[:40] or "site"
-    nom = f"{date.today().strftime('%Y_%m_%d')}_extrait_cadastral_{cle}" + (f"_{centrer_sur.replace(' ', '')}" if centrer_sur else "") + ".pdf"
+    nom = f"{date.today().strftime('%Y_%m_%d')}_{prefixe_nom}_{cle}" + (f"_{centrer_sur.replace(' ', '')}" if centrer_sur else "") + ".pdf"
     return Resultat(pdf=pdf, nom_fichier=nom, parcelles=trouvees, absentes=absentes, echelle=pages[0]["echelle"],
                     format=pages[0]["format"], orientation=pages[0]["orientation"], projection=next(iter(projections), ""),
                     communes=communes, avertissements=avert, pages=pages)

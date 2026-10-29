@@ -19,9 +19,21 @@ Sur une demande GRDF, bloc « Fiche GRDF Grands Projets et courriel » :
 
 1. Relire la fiche, puis la **signer** page 2 (nom, date, signature, cachet).
 2. Déposer le PDF signé dans les pièces, type « fiche grdf », avec « signee » dans le nom : Amont préfère alors cette version à la version générée.
-3. Joindre le plan de situation avec l'emplacement du poste gaz, et le plan cadastral **portrait au 1/1000e** (cadastre.gouv.fr, « outils avancés »). L'extrait que génère Amont pour RTE n'a pas cette échelle : le courriel le signale.
+3. Joindre le plan de situation avec l'emplacement du poste gaz (le plan DGFiP n'a pas de repère de poste : à ajouter à la main).
 4. Envoyer le courriel, puis passer la demande à « Envoyée ».
-5. Si GRDF redirige vers NaTran : passer la demande à « Redirigé vers NaTran » et activer la filière dans `amont_config.json` (`"filieres_optionnelles": ["natran"]`).
+5. Si GRDF redirige vers NaTran : bouton « Ouvrir la demande NaTran » (voir plus bas), puis passer la demande GRDF à « Redirigé vers NaTran ».
+
+## Plan cadastral au format GRDF
+
+Bouton « Générer le plan cadastral 1/1000e » dans le bloc GRDF : extrait officiel du plan cadastral (cadastre.gouv.fr), **portrait, 1/1000e**, A4 ou A3 au choix, joint à la demande GRDF (type `plan_cadastral_1000`). Essayé en réel sur OM01 : le PDF sort en A4 portrait, « échelle d'édition 1/1000 ».
+Un cadre A4 au 1/1000e couvre environ 195 m x 211 m (A3 : 281 m x 301 m). Un site de plusieurs dizaines d'hectares déborde : saisir la parcelle du poste gaz dans « Centrer sur la parcelle du poste gaz ». Le débord est signalé par un point à vérifier. « Tout préparer » le génère aussi quand la fiche porte des parcelles.
+
+## Filière NaTran
+
+NaTran s'active depuis le site, sans toucher à `amont_config.json` :
+
+- bouton « Activer NaTran » / « Désactiver NaTran » sur le tableau de bord (le réglage est gardé dans la base et vaut pour tout le site) ;
+- bouton « Ouvrir la demande NaTran » dans le bloc GRDF : active la filière si besoin et crée la demande NaTran du site, pré-remplie depuis la fiche (débits, pression, usage). Rejouable : une demande existante n'est pas dupliquée.
 
 ## Nouveaux champs de la fiche du site
 
@@ -43,6 +55,6 @@ La page Documents d'une base existante n'est pas modifiée : ajouter le modèle 
 
 ## Pas encore fait
 
-- Aucune demande NaTran créée automatiquement à la redirection.
+- La demande NaTran est ouverte par un clic, pas automatiquement : Amont ne lit pas encore la réponse de GRDF pour détecter la redirection.
 - Lecture des réponses de GRDF (comme pour les études RTE et les PTF) : à faire quand une réponse réelle sera déposée.
 - Le délai de réponse de GRDF Grands Projets n'est pas connu : seule une relance à 15 jours est calculée.

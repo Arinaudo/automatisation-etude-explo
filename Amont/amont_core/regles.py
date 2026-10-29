@@ -108,6 +108,13 @@ def _lire_config() -> dict:
 
 CONFIG = _lire_config()
 ORDRE_FILIERES = ORDRE_FILIERES_BASE + [f for f in FILIERES_OPTIONNELLES if f in CONFIG.get("filieres_optionnelles", [])]
+
+
+def appliquer_optionnelles(actives: list[str]) -> list[str]:
+    """Active ou retire les filieres optionnelles (NaTran) pour tout le processus. Modifie ORDRE_FILIERES en place :
+    les modules qui l'ont importe voient le changement."""
+    ORDRE_FILIERES[:] = ORDRE_FILIERES_BASE + [f for f in FILIERES_OPTIONNELLES if f in actives]
+    return list(ORDRE_FILIERES)
 HORS_CHAINE = {"irrecevable": "Irrecevable", "abandonne": "Abandonné"}
 
 # Statuts qui exigent des pieces : le passage a "depose" est refuse si une piece
@@ -122,7 +129,7 @@ PIECES_OBLIGATOIRES_POUR_DEPOT: dict[str, list[str]] = {
 
 TYPES_PIECES = [
     "extrait_cadastral", "plan_situation", "plan_implantation", "plan_installation", "unifilaire", "permis", "preuve_virement",
-    "fiche_d2", "fiche_grdf", "kbis", "plan_200", "plan_2000", "certificat_adressage", "annexe_cartes", "planning", "montee_en_charge", "mandat", "plan_masse", "photo_environnement",
+    "fiche_d2", "fiche_grdf", "plan_cadastral_1000", "kbis", "plan_200", "plan_2000", "certificat_adressage", "annexe_cartes", "planning", "montee_en_charge", "mandat", "plan_masse", "photo_environnement",
     "etude_recue", "ptf", "pdr", "devis", "convention", "rapport_faisabilite", "autre",
 ]
 

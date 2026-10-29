@@ -161,6 +161,10 @@ CREATE TABLE IF NOT EXISTS ressources (
     verifie_le TEXT, ordre INTEGER DEFAULT 0,
     cree_le TEXT, modifie_le TEXT
 );
+CREATE TABLE IF NOT EXISTS parametres (
+    cle TEXT PRIMARY KEY,
+    valeur TEXT
+);
 CREATE TABLE IF NOT EXISTS filieres_projet (
     projet_code TEXT NOT NULL REFERENCES projets(code) ON DELETE CASCADE,
     filiere TEXT NOT NULL,
@@ -233,6 +237,7 @@ class Registre:
         self.cx.executescript(SCHEMA_07)
         self._migrer()
         self.verrou = threading.RLock()  # extractions en tache de fond
+        regles.appliquer_optionnelles(self.filieres_optionnelles())
 
     @property
     def cx(self) -> sqlite3.Connection:
@@ -788,6 +793,28 @@ class Registre:
     def pieces_manquantes(self, demande_id: str, filiere: str) -> list[str]:
         presentes = {p["type"] for p in self.lister_pieces(demande_id)}
         return [t for t in regles.PIECES_OBLIGATOIRES_POUR_DEPOT.get(filiere, []) if t not in presentes]
+
+    # ------------------------------------------------------- filieres optionnelles (NaTran)
+    def filieres_optionnelles(self) -> list[str]:
+        """Filieres optionnelles actives : le choix fait depuis le site l'emporte sur amont_config.json."""
+        r = self.cx.execute("SELECT valeur FROM parametres WHERE cle = 'filieres_optionnelles'").fetchone()
+        if r is None:
+            return list(regles.CONFIG.get("filieres_optionnelles", []))
+        try:
+            return [f for f in json.loads(r["valeur"]) if f in regles.FILIERES_OPTIONNELLES]
+        except ValueError:
+            return []
+
+    def definir_filiere_optionnelle(self, filiere: str, actif: bool, auteur: str = "") -> list[str]:
+        if filiere not in regles.FILIERES_OPTIONNELLES:
+            raise ValueError(f"filière non optionnelle : {filiere}")
+        actives = [f for f in self.filieres_optionnelles() if f != filiere] + ([filiere] if actif else [])
+        self.cx.execute("INSERT INTO parametres (cle, valeur) VALUES ('filieres_optionnelles', ?)"
+                        " ON CONFLICT(cle) DO UPDATE SET valeur = excluded.valeur", (json.dumps(actives),))
+        self._journal(None, auteur, f"filière {regles.FILIERES[filiere]['court']}", "activée" if not actif else "désactivée",
+                      "activée" if actif else "désactivée", "dashboard")
+        self.cx.commit()
+        return regles.appliquer_optionnelles(actives)
 
     # ------------------------------------------------------- filieres sans objet
     def filieres_etat(self, code: str) -> dict:

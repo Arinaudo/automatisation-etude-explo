@@ -77,6 +77,7 @@ def referentiel():
     return {
         "enseigne": ENSEIGNE,
         "ordre_filieres": regles.ORDRE_FILIERES,
+        "filieres_optionnelles": {f: f in regles.ORDRE_FILIERES for f in regles.FILIERES_OPTIONNELLES},
         "filieres": {k: {"libelle": v["libelle"], "court": v["court"], "dimension": v["dimension"],
                          "etapes": [{"cle": e[0], "libelle": e[1], "detail": e[2]} for e in v["etapes"]]}
                      for k, v in regles.FILIERES.items()},
@@ -318,6 +319,13 @@ def document_cadastre(code: str, nature: str, corps: dict, qui: str) -> dict:
     try:
         if nature == "situation":
             r = cadastre.plan_situation_site(*args, nom_site=str(v.get("nom_installation") or code), journal=lambda *a: None)
+        elif nature == "gaz":
+            # plan cadastral demande par GRDF : portrait, 1/1000e, impression « outils avancés » de cadastre.gouv.fr
+            r = cadastre.extrait_site(*args, centrer_sur=corps.get("centrer_sur") or None,
+                                      echelle=int(corps["echelle"]) if corps.get("echelle") else 1000,
+                                      format_=corps.get("format") or "A4", orientation="Portrait",
+                                      nom_site=str(v.get("nom_installation") or code), journal=lambda *a: None,
+                                      prefixe_nom="plan_cadastral_1000")
         else:
             r = cadastre.extrait_site(*args, centrer_sur=corps.get("centrer_sur") or None,
                                       echelle=int(corps["echelle"]) if corps.get("echelle") else None,
@@ -326,11 +334,14 @@ def document_cadastre(code: str, nature: str, corps: dict, qui: str) -> dict:
     except cadastre.ErreurCadastre as e:
         raise ValueError(str(e)) from None
     src = _ranger_dans_sources(code, r.nom_fichier, r.pdf, qui, "cadastre", "cadastre.gouv.fr")
-    type_piece = "plan_situation" if nature == "situation" else "extrait_cadastral"
+    type_piece = {"situation": "plan_situation", "gaz": "plan_cadastral_1000"}.get(nature, "extrait_cadastral")
     pieces, assemblages = [], []
     if corps.get("joindre", True):
-        cibles = registre.lister_demandes(projet=code, filiere="rte_ee") + [
-            d for d in registre.lister_demandes(projet=code, filiere="enedis") if d["statut"] in regles.ETAPES_AVANT_ENVOI]
+        if nature == "gaz":
+            cibles = [d for d in registre.lister_demandes(projet=code, filiere="grdf") if d["statut"] in regles.ETAPES_AVANT_ENVOI]
+        else:
+            cibles = registre.lister_demandes(projet=code, filiere="rte_ee") + [
+                d for d in registre.lister_demandes(projet=code, filiere="enedis") if d["statut"] in regles.ETAPES_AVANT_ENVOI]
         for d in cibles:
             pieces.append(_joindre(d["id"], type_piece, Path(src["chemin"]).name, r.pdf, qui))
             if nature == "situation" and d["filiere"] == "rte_ee":
@@ -397,6 +408,36 @@ async def extrait_cadastral(code: str, req: Request):
     import anyio
     corps, qui = await _corps(req), auteur(req)
     return await anyio.to_thread.run_sync(lambda: document_cadastre(code, "extrait", corps, qui))
+
+
+@app.put("/api/filieres/{filiere}")
+async def activer_filiere(filiere: str, req: Request):
+    """{"actif": true} : active ou retire une filiere optionnelle (NaTran) pour tout le site web."""
+    corps = await _corps(req)
+    return {"ordre_filieres": registre.definir_filiere_optionnelle(filiere, bool(corps.get("actif")), auteur(req))}
+
+
+@app.post("/api/sites/{code}/ouvrir-natran", status_code=201)
+def ouvrir_natran(code: str, req: Request):
+    """GRDF redirige vers NaTran : active la filiere au besoin et cree la demande NaTran du site, pre-remplie depuis la fiche."""
+    if not registre.obtenir_projet(code):
+        raise KeyError(code)
+    qui = auteur(req)
+    if "natran" not in regles.ORDRE_FILIERES:
+        registre.definir_filiere_optionnelle("natran", True, qui)
+    cree = registre.preparer_demandes(code, ["natran"], qui)
+    existantes = registre.lister_demandes(projet=code, filiere="natran")
+    return {"cree": bool(cree), "demande": (cree or existantes)[0]}
+
+
+@app.post("/api/sites/{code}/plan-cadastral-gaz")
+async def plan_cadastral_gaz(code: str, req: Request):
+    """Plan cadastral au format demande par la fiche GRDF : portrait, 1/1000e (A4 par defaut), joint aux demandes GRDF.
+    Corps facultatif : {"centrer_sur": "AH 367", "format": "A3", "echelle": 1000, "joindre": true}. Un site plus grand que
+    le cadre (200 m x 210 m en A4) se centre sur la parcelle du poste gaz."""
+    import anyio
+    corps, qui = await _corps(req), auteur(req)
+    return await anyio.to_thread.run_sync(lambda: document_cadastre(code, "gaz", corps, qui))
 
 
 @app.post("/api/sites/{code}/plan-situation")
@@ -542,6 +583,18 @@ def _preparer_site(tache: dict, code: str, qui: str) -> None:
             faits.append(f"{d['id']} : fiche GRDF générée" + (f", à compléter : {', '.join(manque)}" if manque else ", complète"))
         return ("fait" if any("générée" in f or "créée" in f for f in faits) else "deja"), " ; ".join(faits)
     etape("Fiche GRDF Grands Projets", fiche_grdf)
+
+    def plan_gaz():
+        gaz = [d for d in registre.lister_demandes(projet=code, filiere="grdf") if d["statut"] in regles.ETAPES_AVANT_ENVOI]
+        if not gaz:
+            return "ignore", "pas de demande GRDF à préparer"
+        if not (registre.valeurs_fiche(code).get("parcelles")):
+            return "erreur", "parcelles absentes de la fiche du site"
+        if all(any(p["type"] == "plan_cadastral_1000" for p in registre.lister_pieces(d["id"])) for d in gaz):
+            return "deja", "plan cadastral 1/1000e déjà joint"
+        r = document_cadastre(code, "gaz", {}, qui)
+        return "fait", r["bilan"] + ("" if not r["avertissements"] else " ⚠ " + " ; ".join(r["avertissements"]))
+    etape("Plan cadastral 1/1000e pour GRDF", plan_gaz)
 
     def bilan():
         lignes = []
@@ -790,7 +843,7 @@ def courriel_ptf_eml(id_: str):
 
 
 # ------------------------------------------------- GRDF : fiche de renseignements Grands Projets
-PIECES_PARTAGEES_GAZ = ("plan_situation", "extrait_cadastral", "kbis", "plan_200", "plan_2000", "certificat_adressage")
+PIECES_PARTAGEES_GAZ = ("plan_situation", "kbis", "plan_200", "plan_2000", "certificat_adressage")
 
 
 def _demande_grdf(id_: str) -> dict:
@@ -826,7 +879,9 @@ def apercu_grdf(id_: str):
     """Ce que la fiche GRDF contiendra, ses cases encore vides et les points a verifier."""
     d = _demande_grdf(id_)
     x = _donnees_grdf(d)
+    plans = [p for p in registre.lister_pieces(id_) if p["type"] == "plan_cadastral_1000"]
     return {"manquants": grdf.manquants(x), "alertes": grdf.alertes_fiche(x),
+            "plan_cadastral": plans[-1] if plans else None,
             "pieces_fiche": [p for p in registre.lister_pieces(id_) if p["type"] == "fiche_grdf"],
             "puissance_max_mw": x["puissance_max_mw"], "pression": x["_pression"], "annees": x["_annees"]}
 

@@ -49,7 +49,7 @@ def test_modele_vide_de_toute_donnee():
 
 
 def test_fiche_remplie():
-    pieces = [{"type": "plan_situation"}, {"type": "extrait_cadastral"}]
+    pieces = [{"type": "plan_situation"}, {"type": "plan_cadastral_1000"}]
     x = grdf.donnees(FICHE, {}, pieces, "TEST")
     pdf = grdf.remplir(x)
     assert _lire(pdf, "moa_societe") == "SAS TEST"

@@ -494,14 +494,21 @@ details.ajout[open] summary{border-bottom:1px dashed var(--rule)}
     if(a.alertes.length) h+='<div class="alertes">'+a.alertes.map(x=>'<div class="al info"><span>'+esc(x)+'</span></div>').join("")+'</div>';
     h+='<div class="actions"><button class="primaire" data-action="generer-grdf" data-id="'+esc(d.id)+'">'+(a.pieces_fiche.length?'Régénérer la fiche GRDF':'Générer la fiche GRDF')+'</button>'+
       a.pieces_fiche.slice(-2).map(p=>'<a class="btn" href="/api/pieces/'+p.id+'/fichier">'+esc(p.nom_fichier)+'</a>').join("")+'<span class="etat">relire, signer la page 2 (nom, date, signature, cachet), puis déposer le PDF signé dans les pièces (type fiche grdf, nom contenant « signee »)</span></div>';
+    h+='<div class="sep" style="padding:12px 16px 4px">Plan cadastral demandé par GRDF</div>';
+    h+='<div class="champs" style="padding-top:0"><div><label for="gaz-centre">Centrer sur la parcelle du poste gaz (facultatif)</label><input id="gaz-centre" placeholder="ex. AH 367"></div>'+
+      '<div><label for="gaz-format">Format</label><select id="gaz-format"><option value="A4">A4 portrait, 1/1000e</option><option value="A3">A3 portrait, 1/1000e</option></select></div></div>'+
+      '<div class="actions"><button data-action="plan-cadastral-gaz" data-code="'+esc(d.projet_code)+'">'+(a.plan_cadastral?'Régénérer le plan cadastral 1/1000e':'Générer le plan cadastral 1/1000e')+'</button>'+
+      '<span class="etat" id="msg-gaz">'+(a.plan_cadastral?esc(a.plan_cadastral.nom_fichier)+' · ':'')+'portrait, 1/1000e, extrait officiel cadastre.gouv.fr. Un grand site déborde du cadre (200 m x 210 m en A4) : centrez sur la parcelle du poste gaz.</span></div>';
     if(m){
       h+='<div class="sep" style="padding:12px 16px 4px">Courriel d\'envoi</div>';
       if(m.alertes.length) h+='<div class="alertes">'+m.alertes.map(x=>'<div class="al warn"><span>'+esc(x)+'</span></div>').join("")+'</div>';
       h+='<div class="backend"><b>À :</b> '+esc(m.a.join(", "))+(m.cc.length?'<br><b>Cc :</b> '+esc(m.cc.join(", ")):'')+'<br><b>Objet :</b> '+esc(m.objet)+'<br><b>Pièces :</b> '+(m.pieces.length?m.pieces.map(p=>esc(p.nom_fichier)).join(", ")+' ('+taille(m.taille_octets)+')':'aucune')+'</div>';
       h+='<details class="ajout"><summary>Texte du courriel</summary><pre class="journal-robot" style="white-space:pre-wrap">'+esc(m.corps)+'</pre></details>';
       h+='<div class="actions"><a class="btn primaire" href="/api/demandes/'+encodeURIComponent(d.id)+'/courriel.eml" download>Télécharger le courriel (.eml)</a><button data-action="copier" data-texte="'+esc(m.corps)+'">Copier le texte</button>'+
-        '<span class="etat">Le .eml s\'ouvre dans Outlook comme un nouveau message, pièces jointes comprises : relire, puis « Envoyer » vous-même. Ensuite, déposez le message envoyé dans les échanges et passez la demande à « envoyée ». Si GRDF redirige vers NaTran, passez-la à « redirigé vers NaTran ».</span></div>';
+        '<span class="etat">Le .eml s\'ouvre dans Outlook comme un nouveau message, pièces jointes comprises : relire, puis « Envoyer » vous-même. Ensuite, déposez le message envoyé dans les échanges et passez la demande à « envoyée ».</span></div>';
     }
+    h+='<div class="sep" style="padding:12px 16px 4px">Si GRDF redirige vers NaTran</div><div class="actions"><button data-action="ouvrir-natran" data-code="'+esc(d.projet_code)+'">Ouvrir la demande NaTran</button>'+
+      '<span class="etat">Active la filière NaTran si besoin et crée sa demande, pré-remplie depuis la fiche du site. Passez ensuite cette demande GRDF à « redirigé vers NaTran ».</span></div>';
     return h+'</div>'; }
   function ptfHtml(d){
     let h='<div class="bloc"><div class="bloc-head"><h2>PTF reçue</h2>'+((d.analyses||[]).length?'<span class="etat">'+d.analyses.length+' lecture'+(d.analyses.length>1?"s":"")+'</span>':'')+'</div>';
@@ -551,7 +558,7 @@ details.ajout[open] summary{border-bottom:1px dashed var(--rule)}
     let h=head("Tableau de bord","Une ligne par site : étape, prochaine action et échéance pour chaque opérateur, et dernier échange. Cliquez une case pour ouvrir la demande, ou pour en créer une.",tot);
     h+= alertes.length ? '<div class="alertes">'+alertes.map(a=>'<div class="al '+a.severite+'"><code><a href="#/demande/'+esc(a.demande_id)+'" style="text-decoration:none">'+esc(a.demande_id)+'</a></code><span class="ftag '+a.filiere+'">'+F(a.filiere).court+'</span><span><b>'+esc(noms[a.projet]||a.projet)+'</b> · '+esc(a.texte)+'</span></div>').join("")+'</div>'
       : '<div class="alertes"><div class="al"><span>Aucune échéance à moins de 14 jours et aucun dossier en attente de validation. Le courriel du matin ne partira pas aujourd\'hui.</span></div></div>';
-    h+='<div class="bloc"><div class="bloc-head"><h2>Projets et filières</h2><div style="display:flex;gap:8px"><a class="btn" href="#/nouveau-projet">Nouveau projet</a><a class="btn" href="/api/export.xlsx">Exporter en Excel</a></div></div><div class="tbl-scroll"><table class="matrice"><thead><tr><th>Projet</th>'+REF.ordre_filieres.map(f=>'<th class="fil">'+esc(F(f).libelle)+'</th>').join("")+'<th>Dernier échange</th></tr></thead><tbody>';
+    h+='<div class="bloc"><div class="bloc-head"><h2>Projets et filières</h2><div style="display:flex;gap:8px"><a class="btn" href="#/nouveau-projet">Nouveau projet</a><button data-action="toggle-natran" title="NaTran suit GRDF quand celui-ci redirige : à activer au besoin">'+((REF.filieres_optionnelles||{}).natran?'Désactiver NaTran':'Activer NaTran')+'</button><a class="btn" href="/api/export.xlsx">Exporter en Excel</a></div></div><div class="tbl-scroll"><table class="matrice"><thead><tr><th>Projet</th>'+REF.ordre_filieres.map(f=>'<th class="fil">'+esc(F(f).libelle)+'</th>').join("")+'<th>Dernier échange</th></tr></thead><tbody>';
     if(!projets.length) h+='<tr><td colspan="'+(REF.ordre_filieres.length+2)+'" class="etat" style="padding:30px;text-align:center">Aucun projet. Créez le premier, ou lancez le script d\'import.</td></tr>';
     projets.forEach(p=>{
       h+='<tr><td><div class="projname"><a href="#/projet/'+p.code+'" style="text-decoration:none">'+esc(p.nom)+'</a></div><div class="projmeta">'+esc(p.commune||"")+(p.puissance_cible_mw?' · '+nb(p.puissance_cible_mw)+' MW visés':'')+'</div>'+(p.a_verifier?'<a class="ptchip" href="#/projet/'+esc(p.code)+'">⚑ '+p.a_verifier+' à vérifier</a>':'')+'</td>';
@@ -898,6 +905,17 @@ details.ajout[open] summary{border-bottom:1px dashed var(--rule)}
         toast("D2 générée : "+r.piece.nom_fichier+(r.manquants.length?" · "+r.manquants.length+" case(s) à compléter":"")); route(true); return; }
       if(a==="generer-grdf"){ btn.disabled=true; const r=await api("/demandes/"+encodeURIComponent(btn.dataset.id)+"/grdf",{method:"POST",body:"{}"});
         toast("Fiche GRDF générée : "+r.piece.nom_fichier+(r.manquants.length?" · "+r.manquants.length+" champ(s) à compléter":"")); route(true); return; }
+      if(a==="plan-cadastral-gaz"){ const m=$("#msg-gaz"), corps={format:($("#gaz-format")||{}).value||"A4"}; const c=$("#gaz-centre");
+        if(c&&c.value.trim()) corps.centrer_sur=c.value.trim();
+        btn.disabled=true; const lib=btn.textContent; btn.textContent="Récupération sur cadastre.gouv.fr…"; if(m) m.textContent="20 s à 1 min, ne pas quitter la page";
+        try{ const r=await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/plan-cadastral-gaz",{method:"POST",body:JSON.stringify(corps)});
+          toast(r.bilan+(r.pieces.length?" Joint à "+r.pieces.map(x=>x.demande_id).join(", ")+".":" Aucune demande GRDF à laquelle le joindre.")+(r.point_a_verifier?" Un point est signalé à vérifier.":"")); route(true); }
+        finally{ btn.disabled=false; btn.textContent=lib; }
+        return; }
+      if(a==="ouvrir-natran"){ const r=await api("/sites/"+encodeURIComponent(btn.dataset.code)+"/ouvrir-natran",{method:"POST",body:"{}"});
+        toast(r.cree?"Demande NaTran créée : "+r.demande.id+".":"La demande NaTran existe déjà : "+r.demande.id+"."); REF=await api("/referentiel"); location.hash="#/demande/"+encodeURIComponent(r.demande.id); return; }
+      if(a==="toggle-natran"){ const actif=!(REF.filieres_optionnelles||{}).natran; await api("/filieres/natran",{method:"PUT",body:JSON.stringify({actif})});
+        toast(actif?"Filière NaTran activée.":"Filière NaTran désactivée."); REF=await api("/referentiel"); route(true); return; }
       if(a==="aller"){ const el=document.getElementById(btn.dataset.cible); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); return; }
       if(a==="copier"){ try{ await navigator.clipboard.writeText(btn.dataset.texte); toast("Copié."); }catch(e){ toast(btn.dataset.texte); } return; }
       if(a==="editer-ressource"){ const r=(window.__ressources||[]).find(x=>String(x.id)===btn.dataset.rid); if(!r) return; document.querySelectorAll("#form-res [data-r]").forEach(el=>{ el.value=r[el.dataset.r]||""; }); remplirEtapes(r.filiere, r.etape||""); $("[data-action=sauver-ressource]").dataset.rid=r.id; $("#titre-res").textContent="Modifier : "+r.libelle; $("#r-libelle").scrollIntoView({block:"center"}); return; }
